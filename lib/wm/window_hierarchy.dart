@@ -18,21 +18,26 @@ class WindowHierarchy extends StatefulWidget {
 }
 
 class WindowHierarchyState extends State<WindowHierarchy> {
-  final List<WindowEntry> _windows = [];
+  final Map<WindowEntry, Window> _windows = {};
 
-  void pushWindowEntry(WindowEntry entry) =>
-      WidgetsBinding.instance.addPostFrameCallback(
-        (_) => setState(() => _windows.add(entry)),
-      );
+  void pushWindowEntry(WindowEntry entry) {
+    _windows.addAll({entry: buildWindow(entry)});
+    WidgetsBinding.instance.addPostFrameCallback(
+      (_) => setState(() {}),
+    );
+  }
+
+  void popWindowEntry(WindowEntry entry) {
+    _windows.remove(entry);
+    WidgetsBinding.instance.addPostFrameCallback(
+      (_) => setState(() {}),
+    );
+  }
 
   void requestWindowFocus(WindowEntry entry) {
-    print(_windows);
+    Window window = _windows[entry];
     _windows.remove(entry);
-    print(_windows);
-    _windows.insert(0, entry);
-    print(_windows);
-
-    print("kind poggers");
+    _windows.addAll({entry: window});
 
     WidgetsBinding.instance.addPostFrameCallback((_) => setState(() {}));
   }
@@ -42,14 +47,19 @@ class WindowHierarchyState extends State<WindowHierarchy> {
     return _WindowHierarchyInherithedWidget(
       state: this,
       child: Stack(
+        key: ValueKey(_windows),
         children: List.generate(_windows.length, (index) {
-          final WindowEntry entry = _windows[index];
-
-          return Window(
-            entry: entry,
-          );
+          final windows = _windows.values.toList();
+          return windows[index];
         }),
       ),
+    );
+  }
+
+  Window buildWindow(WindowEntry entry) {
+    return Window(
+      key: ValueKey(entry.id),
+      entry: entry,
     );
   }
 }

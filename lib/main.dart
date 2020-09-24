@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_de/wm/window_entry.dart';
 import 'package:flutter_de/wm/window_hierarchy.dart';
@@ -15,6 +17,7 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
+      debugShowCheckedModeBanner: false,
       home: MyHomePage(),
     );
   }
@@ -27,18 +30,25 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   final GlobalKey<WindowHierarchyState> key = GlobalKey<WindowHierarchyState>();
+  int windowIndex = 0;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.black,
       body: WindowHierarchy(key: key),
       floatingActionButton: FloatingActionButton(
+        child: Icon(Icons.add),
         onPressed: () {
+          windowIndex++;
+
           key.currentState.pushWindowEntry(
             WindowEntry(
-              title: "Bruh",
+              title: "Window $windowIndex",
               content: Container(
-                color: Colors.red,
+                color: Colors.white,
+                alignment: Alignment.center,
+                child: Text("Window $windowIndex"),
               ),
             ),
           );
