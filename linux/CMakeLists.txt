@@ -1,8 +1,8 @@
 cmake_minimum_required(VERSION 3.10)
 project(runner LANGUAGES CXX)
 
-set(BINARY_NAME "flutter_de")
-set(APPLICATION_ID "hrx.flutter_de")
+set(BINARY_NAME "wm")
+set(APPLICATION_ID "hrx.wm")
 
 cmake_policy(SET CMP0063 NEW)
 

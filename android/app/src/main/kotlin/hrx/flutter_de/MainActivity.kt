@@ -1,4 +1,4 @@
-package hrx.flutter_de
+package hrx.wm
 
 import io.flutter.embedding.android.FlutterActivity
 

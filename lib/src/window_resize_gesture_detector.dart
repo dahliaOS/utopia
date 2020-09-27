@@ -4,10 +4,12 @@ import 'package:flutter/rendering.dart';
 class WindowResizeGestureDetector extends StatelessWidget {
   final double borderThickness;
   final Map<Alignment, GestureDragUpdateCallback> listeners;
+  final GestureDragEndCallback onPanEnd;
 
   WindowResizeGestureDetector({
     this.borderThickness,
     @required this.listeners,
+    this.onPanEnd,
   });
 
   @override
@@ -98,6 +100,7 @@ class WindowResizeGestureDetector extends StatelessWidget {
         cursor: cursor,
         child: GestureDetector(
           onPanUpdate: onPanUpdate,
+          onPanEnd: onPanEnd,
         ),
       ),
     );
