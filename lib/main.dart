@@ -1,8 +1,10 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
-import 'package:flutter_de/wm/window_entry.dart';
-import 'package:flutter_de/wm/window_hierarchy.dart';
+import 'package:wm/example.dart';
+import 'package:wm/src/window_entry.dart';
+import 'package:wm/src/window_hierarchy.dart';
+import 'package:wm/taskbar.dart';
+import 'package:wm/wallpaper_layer.dart';
+import 'package:wm/wm.dart';
 
 void main() {
   runApp(MyApp());
@@ -13,11 +15,8 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Flutter Demo',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-        visualDensity: VisualDensity.adaptivePlatformDensity,
-      ),
       debugShowCheckedModeBanner: false,
+      color: Colors.black,
       home: MyHomePage(),
     );
   }
@@ -36,23 +35,45 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.black,
-      body: WindowHierarchy(key: key),
-      floatingActionButton: FloatingActionButton(
-        child: Icon(Icons.add),
-        onPressed: () {
-          windowIndex++;
-
-          key.currentState.pushWindowEntry(
-            WindowEntry(
-              title: "Window $windowIndex",
-              content: Container(
+      body: WindowHierarchy(
+        key: key,
+        rootWindow: WallpaperLayer(),
+        alwaysOnTopWindow: TaskBar(
+          leading: InkWell(
+            child: SizedBox.fromSize(
+              size: Size.square(48),
+              child: Icon(
+                Icons.apps,
                 color: Colors.white,
-                alignment: Alignment.center,
-                child: Text("Window $windowIndex"),
               ),
             ),
-          );
-        },
+            onTap: () {
+              key.currentState.pushWindowEntry(
+                WindowEntry.withDefaultToolbar(
+                  icon: NetworkImage(
+                    "https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcR1HDcyXu9SHC4glO2kFKjVhcy9kU6Q1S9T2g&usqp=CAU",
+                  ),
+                  title: "Example",
+                  toolbarColor: Colors.white,
+                  content: ExampleApp(),
+                ),
+              );
+            },
+          ),
+          trailing: InkWell(
+            child: SizedBox.fromSize(
+              size: Size.square(48),
+              child: Icon(
+                Icons.tune,
+                color: Colors.white,
+              ),
+            ),
+            onTap: () {},
+          ),
+        ),
+        margin: EdgeInsets.only(
+          bottom: 48,
+        ),
       ),
     );
   }

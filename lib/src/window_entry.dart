@@ -12,18 +12,24 @@ class WindowEntry extends ChangeNotifier {
   final Size initialSize;
   final Size minSize;
   Rect _windowRect;
-  WindowToolbar _toolbar;
+  Widget _toolbar;
+  bool _maximized = false;
+  bool _minimized = false;
   final Color bgColor;
   final double elevation;
   final bool allowResize;
   ShapeBorder _shape;
+
+  final GlobalKey renderBoundaryKey = GlobalKey();
 
   String get title => _title;
   ImageProvider get icon => _icon;
   bool get usesToolbar => _usesToolbar;
   Color get toolbarColor => _toolbarColor;
   Rect get windowRect => _windowRect;
-  WindowToolbar get toolbar => _toolbar;
+  Widget get toolbar => _toolbar;
+  bool get maximized => _maximized;
+  bool get minimized => _minimized;
   ShapeBorder get shape => _shape;
 
   set title(String value) {
@@ -51,8 +57,18 @@ class WindowEntry extends ChangeNotifier {
     notifyListeners();
   }
 
-  set toolbar(WindowToolbar value) {
+  set toolbar(Widget value) {
     _toolbar = value;
+    notifyListeners();
+  }
+
+  set maximized(bool value) {
+    _maximized = value;
+    notifyListeners();
+  }
+
+  set minimized(bool value) {
+    _minimized = value;
     notifyListeners();
   }
 
@@ -62,7 +78,7 @@ class WindowEntry extends ChangeNotifier {
     @required this.content,
     bool usesToolbar = false,
     Color toolbarColor = const Color(0xFF212121),
-    WindowToolbar toolbar,
+    Widget toolbar,
     this.initialSize = const Size(600, 480),
     this.minSize = const Size.square(100),
     ShapeBorder shape = const RoundedRectangleBorder(),
@@ -113,10 +129,8 @@ class WindowEntry extends ChangeNotifier {
     toolbar = DefaultWindowToolbar();
   }
 
-  static WindowEntry of(BuildContext context) {
-    return context
-        .dependOnInheritedWidgetOfExactType<WindowEntryInherithedWidget>()
-        ?.entry;
+  void toggleMaximize() {
+    maximized = !maximized;
   }
 }
 
@@ -129,18 +143,8 @@ class WindowEntryId {
   String toString() => hashCode.toString();
 }
 
-class WindowEntryInherithedWidget extends InheritedWidget {
-  final Widget child;
-  final WindowEntry entry;
-
-  WindowEntryInherithedWidget({
-    @required this.entry,
-    @required this.child,
-  }) : super(child: child);
-
-  @override
-  bool updateShouldNotify(WindowEntryInherithedWidget oldWidget) =>
-      entry.windowRect != oldWidget.entry.windowRect ||
-      entry.usesToolbar != oldWidget.entry.usesToolbar ||
-      entry.toolbarColor != oldWidget.entry.toolbarColor;
+enum WindowState {
+  NORMAL,
+  MAXIMIZED,
+  MINIMIZED,
 }

@@ -67,9 +67,7 @@ class WindowHierarchyState extends State<WindowHierarchy> {
           listEquals(previous._focusTree, current._focusTree),
       builder: (context, _) {
         return GestureDetector(
-          onTapDown: (details) {
-            print("helo");
-          },
+          onTapDown: (details) {},
           behavior: HitTestBehavior.opaque,
           child: Stack(
             children: [
@@ -77,6 +75,7 @@ class WindowHierarchyState extends State<WindowHierarchy> {
               Container(
                 margin: widget.margin ?? EdgeInsets.zero,
                 child: Stack(
+                  clipBehavior: Clip.none,
                   children: entriesByFocus
                       .map(
                         (e) => Window(
