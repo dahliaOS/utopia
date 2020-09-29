@@ -1,4 +1,8 @@
+import 'dart:typed_data';
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:wm/src/window_toolbar.dart';
 import 'package:wm/wm.dart';
 
@@ -10,17 +14,19 @@ class WindowEntry extends ChangeNotifier {
   bool _usesToolbar;
   Color _toolbarColor;
   final Size initialSize;
+  final bool initiallyCenter;
   final Size minSize;
   Rect _windowRect;
   Widget _toolbar;
   bool _maximized = false;
   bool _minimized = false;
+  WindowDock _windowDock = WindowDock.NORMAL;
   final Color bgColor;
   final double elevation;
   final bool allowResize;
   ShapeBorder _shape;
 
-  final GlobalKey renderBoundaryKey = GlobalKey();
+  final GlobalKey repaintBoundaryKey = GlobalKey();
 
   String get title => _title;
   ImageProvider get icon => _icon;
@@ -30,6 +36,7 @@ class WindowEntry extends ChangeNotifier {
   Widget get toolbar => _toolbar;
   bool get maximized => _maximized;
   bool get minimized => _minimized;
+  WindowDock get windowDock => _windowDock;
   ShapeBorder get shape => _shape;
 
   set title(String value) {
@@ -72,6 +79,11 @@ class WindowEntry extends ChangeNotifier {
     notifyListeners();
   }
 
+  set windowDock(WindowDock value) {
+    _windowDock = value;
+    notifyListeners();
+  }
+
   WindowEntry({
     String title,
     ImageProvider icon,
@@ -80,6 +92,7 @@ class WindowEntry extends ChangeNotifier {
     Color toolbarColor = const Color(0xFF212121),
     Widget toolbar,
     this.initialSize = const Size(600, 480),
+    this.initiallyCenter = false,
     this.minSize = const Size.square(100),
     ShapeBorder shape = const RoundedRectangleBorder(),
     this.bgColor = Colors.transparent,
@@ -106,6 +119,7 @@ class WindowEntry extends ChangeNotifier {
     @required this.content,
     Color toolbarColor = const Color(0xFF212121),
     this.initialSize = const Size(600, 480),
+    this.initiallyCenter = true,
     this.minSize = const Size(200, 32),
     ShapeBorder shape,
     this.bgColor = Colors.transparent,
@@ -132,6 +146,16 @@ class WindowEntry extends ChangeNotifier {
   void toggleMaximize() {
     maximized = !maximized;
   }
+
+  Future<Uint8List> getScreenshot() async {
+    final box = repaintBoundaryKey.currentContext.findRenderObject() as RenderRepaintBoundary;
+    final image = await box.toImage();
+    final byteData = await image.toByteData(
+      format: ImageByteFormat.png,
+    );
+
+    return byteData.buffer.asUint8List();
+  }
 }
 
 class WindowEntryId {
@@ -143,8 +167,14 @@ class WindowEntryId {
   String toString() => hashCode.toString();
 }
 
-enum WindowState {
+enum WindowDock {
   NORMAL,
-  MAXIMIZED,
-  MINIMIZED,
+  TOP_LEFT,
+  TOP,
+  TOP_RIGHT,
+  RIGHT,
+  LEFT,
+  BOTTOM_LEFT,
+  BOTTOM,
+  BOTTOM_RIGHT,
 }

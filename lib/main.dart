@@ -39,6 +39,8 @@ class _MyHomePageState extends State<MyHomePage> {
         key: key,
         rootWindow: WallpaperLayer(),
         alwaysOnTopWindow: TaskBar(
+          alignment: TaskbarAlignment.LEFT,
+          itemColor: Colors.red[200],
           leading: InkWell(
             child: SizedBox.fromSize(
               size: Size.square(48),
@@ -60,7 +62,7 @@ class _MyHomePageState extends State<MyHomePage> {
               );
             },
           ),
-          trailing: InkWell(
+          /*trailing: InkWell(
             child: SizedBox.fromSize(
               size: Size.square(48),
               child: Icon(
@@ -69,7 +71,7 @@ class _MyHomePageState extends State<MyHomePage> {
               ),
             ),
             onTap: () {},
-          ),
+          ),*/
         ),
         margin: EdgeInsets.only(
           bottom: 48,

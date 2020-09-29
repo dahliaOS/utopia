@@ -31,6 +31,8 @@ class WindowHierarchyState extends State<WindowHierarchy> {
   final List<WindowEntryId> _focusTree = [];
   final Map<WindowEntryId, GlobalKey> _windowKeys = {};
 
+  BoxConstraints constraints;
+
   void pushWindowEntry(WindowEntry entry) {
     _entries.add(entry);
     _focusTree.add(entry.id);
@@ -60,6 +62,11 @@ class WindowHierarchyState extends State<WindowHierarchy> {
 
   @override
   Widget build(BuildContext context) {
+    constraints = BoxConstraints(
+      maxWidth: MediaQuery.of(context).size.width - widget.margin.horizontal,
+      maxHeight: MediaQuery.of(context).size.height - widget.margin.vertical,
+    );
+    
     return Provider<WindowHierarchyState>.value(
       value: this,
       updateShouldNotify: (previous, current) =>
@@ -81,12 +88,6 @@ class WindowHierarchyState extends State<WindowHierarchy> {
                         (e) => Window(
                           entry: e,
                           key: _windowKeys[e.id],
-                          constraints: BoxConstraints(
-                            maxWidth: MediaQuery.of(context).size.width -
-                                widget.margin.horizontal,
-                            maxHeight: MediaQuery.of(context).size.height -
-                                widget.margin.vertical,
-                          ),
                         ),
                       )
                       .toList(),

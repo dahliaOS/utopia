@@ -1,19 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:provider/provider.dart';
 import 'package:wm/src/window_entry.dart';
 import 'package:wm/wm.dart';
-
-abstract class WindowToolbar {
-  Widget builder(
-    BuildContext context, {
-    VoidCallback onClose,
-    GestureDragUpdateCallback onDrag,
-    GestureDragEndCallback onDragEnd,
-    WindowEntry entry,
-    VoidCallback onTap,
-    VoidCallback onDoubleTap,
-  });
-}
 
 class DefaultWindowToolbar extends StatefulWidget {
   @override
@@ -21,7 +10,7 @@ class DefaultWindowToolbar extends StatefulWidget {
 }
 
 class _DefaultWindowToolbarState extends State<DefaultWindowToolbar> {
-  DragUpdateDetails lastDetails;
+  DragUpdateDetails _lastDetails;
 
   @override
   Widget build(BuildContext context) {
@@ -60,13 +49,20 @@ class _DefaultWindowToolbarState extends State<DefaultWindowToolbar> {
                       style: TextStyle(
                         color: fgColor,
                       ),
+                      overflow: TextOverflow.ellipsis,
                     ),
                     Spacer(),
                     WindowToolbarButton(
                       icon: Icons.minimize,
                       onTap: () {
+                        final hierarchy = context.read<WindowHierarchyState>();
+                        final windows = hierarchy.entriesByFocus;
+
                         entry.minimized = true;
-                        setState(() {});
+                        if (windows.length > 1) {
+                          hierarchy
+                              .requestWindowFocus(windows[windows.length - 2]);
+                        }
                       },
                     ),
                     WindowToolbarButton(
@@ -78,6 +74,9 @@ class _DefaultWindowToolbarState extends State<DefaultWindowToolbar> {
                             .read<WindowHierarchyState>()
                             .requestWindowFocus(entry);
                         entry.toggleMaximize();
+                        if (!entry.maximized) {
+                          entry.windowDock = WindowDock.NORMAL;
+                        }
                       },
                     ),
                     WindowToolbarButton(
@@ -112,19 +111,42 @@ class _DefaultWindowToolbarState extends State<DefaultWindowToolbar> {
   }
 
   void onDrag(details) {
-    lastDetails = details;
+    _lastDetails = details;
     final entry = context.read<WindowEntry>();
     final hierarchy = context.read<WindowHierarchyState>();
+    final docked = entry.maximized || entry.windowDock != WindowDock.NORMAL;
+    double dockedToolbarOffset;
+
+    switch (entry.windowDock) {
+      case WindowDock.TOP:
+      case WindowDock.TOP_LEFT:
+      case WindowDock.TOP_RIGHT:
+      case WindowDock.LEFT:
+      case WindowDock.RIGHT:
+        dockedToolbarOffset = 0;
+        break;
+      case WindowDock.BOTTOM:
+      case WindowDock.BOTTOM_LEFT:
+      case WindowDock.BOTTOM_RIGHT:
+        dockedToolbarOffset = hierarchy.constraints.maxHeight / 2;
+        break;
+      case WindowDock.NORMAL:
+      default:
+        dockedToolbarOffset = 0;
+        break;
+    }
+
     Rect base = Rect.fromLTWH(
-      entry.maximized
+      docked
           ? details.globalPosition.dx - entry.windowRect.width / 2
           : entry.windowRect.left,
-      entry.maximized ? 0 : entry.windowRect.top,
+      docked ? dockedToolbarOffset : entry.windowRect.top,
       entry.windowRect.width,
       entry.windowRect.height,
     );
     hierarchy.requestWindowFocus(entry);
     entry.maximized = false;
+    entry.windowDock = WindowDock.NORMAL;
 
     entry.windowRect = base.translate(
       details.delta.dx,
@@ -135,9 +157,37 @@ class _DefaultWindowToolbarState extends State<DefaultWindowToolbar> {
 
   void onDragEnd(details) {
     final entry = context.read<WindowEntry>();
-    if (lastDetails.globalPosition.dy <= 2) {
+    if (_lastDetails.globalPosition.dy <= 2 &&
+            _lastDetails.globalPosition.dx <= 50 ||
+        _lastDetails.globalPosition.dy <= 50 &&
+            _lastDetails.globalPosition.dx <= 2) {
+      entry.windowDock = WindowDock.TOP_LEFT;
+      return;
+    }
+    if (_lastDetails.globalPosition.dy <= 2 &&
+            _lastDetails.globalPosition.dx >=
+                MediaQuery.of(context).size.width - 50 ||
+        _lastDetails.globalPosition.dy <= 50 &&
+            _lastDetails.globalPosition.dx >=
+                MediaQuery.of(context).size.width - 2) {
+      entry.windowDock = WindowDock.TOP_RIGHT;
+      return;
+    }
+
+    if (_lastDetails.globalPosition.dy <= 2) {
       entry.maximized = true;
-      setState(() {});
+      return;
+    }
+
+    if (_lastDetails.globalPosition.dx <= 2) {
+      entry.windowDock = WindowDock.LEFT;
+      return;
+    }
+
+    if (_lastDetails.globalPosition.dx >=
+        MediaQuery.of(context).size.width - 2) {
+      entry.windowDock = WindowDock.RIGHT;
+      return;
     }
   }
 
@@ -152,23 +202,6 @@ class _DefaultWindowToolbarState extends State<DefaultWindowToolbar> {
     hierarchy.requestWindowFocus(entry);
     entry.toggleMaximize();
   }
-}
-
-class _DefaultWindowToolbar extends WindowToolbar {
-  List<WindowToolbarButton> extraButtons;
-
-  _DefaultWindowToolbar();
-
-  @override
-  Widget builder(
-    BuildContext context, {
-    VoidCallback onClose,
-    GestureDragUpdateCallback onDrag,
-    GestureDragEndCallback onDragEnd,
-    WindowEntry entry,
-    VoidCallback onTap,
-    VoidCallback onDoubleTap,
-  }) {}
 }
 
 class WindowToolbarButton extends StatelessWidget {

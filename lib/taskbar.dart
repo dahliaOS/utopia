@@ -9,11 +9,15 @@ class TaskBar extends StatelessWidget {
   final Widget leading;
   final Widget trailing;
   final TaskbarAlignment alignment;
+  final Color backgroundColor;
+  final Color itemColor;
 
   TaskBar({
     this.leading,
     this.alignment = TaskbarAlignment.LEFT,
     this.trailing,
+    this.backgroundColor = Colors.black,
+    this.itemColor = Colors.white,
   });
 
   @override
@@ -30,19 +34,30 @@ class TaskBar extends StatelessWidget {
             sigmaY: 24,
           ),
           child: Material(
-            color: Colors.black.withAlpha(150),
+            color: backgroundColor,
             child: Row(
               children: [
                 leading ?? Container(),
                 Expanded(
-                  child: Row(
-                    mainAxisAlignment: taskbarAlignment,
-                    children: Provider.of<WindowHierarchyState>(context)
-                        .windows
-                        .map(
-                          (e) => TaskBarItem(entry: e),
-                        )
-                        .toList(),
+                  child: SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Row(
+                      mainAxisAlignment: taskbarAlignment,
+                      children: Provider.of<WindowHierarchyState>(context)
+                          .windows
+                          .map<Widget>(
+                            (e) => TaskBarItem(
+                              entry: e,
+                              color: itemColor,
+                            ),
+                          )
+                          .toList()
+                          .joinType(
+                            SizedBox(
+                              width: 2,
+                            ),
+                          ),
+                    ),
                   ),
                 ),
                 trailing ?? Container(),
@@ -56,8 +71,8 @@ class TaskBar extends StatelessWidget {
 
   MainAxisAlignment get taskbarAlignment {
     switch (alignment) {
-      case TaskbarAlignment.CENTER:
-        return MainAxisAlignment.center;
+      /*case TaskbarAlignment.CENTER:
+        return MainAxisAlignment.center;*/
       case TaskbarAlignment.RIGHT:
         return MainAxisAlignment.end;
       case TaskbarAlignment.LEFT:
@@ -69,6 +84,22 @@ class TaskBar extends StatelessWidget {
 
 enum TaskbarAlignment {
   LEFT,
-  CENTER,
+  //CENTER,
   RIGHT,
+}
+
+extension JoinList<T> on List<T> {
+  List<T> joinType(T separator) {
+    List<T> workList = [];
+
+    for (int i = 0; i < (length * 2) - 1; i++) {
+      if (i % 2 == 0) {
+        workList.add(this[i ~/ 2]);
+      } else {
+        workList.add(separator);
+      }
+    }
+
+    return workList;
+  }
 }
