@@ -103,15 +103,8 @@ class WindowEntry extends ChangeNotifier {
         _icon = icon,
         _usesToolbar = usesToolbar,
         _toolbarColor = toolbarColor,
-        _toolbar = toolbar {
-    _shape = shape;
-    windowRect = Rect.fromLTWH(
-      0,
-      0,
-      initialSize.width,
-      initialSize.height,
-    );
-  }
+        _toolbar = toolbar,
+        _shape = shape;
 
   WindowEntry.withDefaultToolbar({
     String title,
@@ -129,12 +122,6 @@ class WindowEntry extends ChangeNotifier {
         _title = title,
         _toolbarColor = toolbarColor,
         _icon = icon {
-    windowRect = Rect.fromLTWH(
-      0,
-      0,
-      initialSize.width,
-      initialSize.height,
-    );
     _shape = shape ??
         RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(4),

@@ -6,24 +6,18 @@ import 'package:wm/src/window_entry.dart';
 
 class WindowHierarchy extends StatefulWidget {
   final Widget rootWindow;
-  final Widget alwaysOnTopWindow;
+  final List<Widget> alwaysOnTopWindows;
   final EdgeInsets margin;
 
   WindowHierarchy({
     GlobalKey<WindowHierarchyState> key,
     this.rootWindow,
-    this.alwaysOnTopWindow,
+    this.alwaysOnTopWindows,
     this.margin,
   }) : super(key: key);
 
   @override
   WindowHierarchyState createState() => WindowHierarchyState();
-
-  static WindowHierarchyState of(BuildContext context) {
-    return context
-        .dependOnInheritedWidgetOfExactType<_WindowHierarchyInherithedWidget>()
-        ?.state;
-  }
 }
 
 class WindowHierarchyState extends State<WindowHierarchy> {
@@ -31,7 +25,7 @@ class WindowHierarchyState extends State<WindowHierarchy> {
   final List<WindowEntryId> _focusTree = [];
   final Map<WindowEntryId, GlobalKey> _windowKeys = {};
 
-  BoxConstraints constraints;
+  Rect wmRect;
 
   void pushWindowEntry(WindowEntry entry) {
     _entries.add(entry);
@@ -62,11 +56,15 @@ class WindowHierarchyState extends State<WindowHierarchy> {
 
   @override
   Widget build(BuildContext context) {
-    constraints = BoxConstraints(
-      maxWidth: MediaQuery.of(context).size.width - widget.margin.horizontal,
-      maxHeight: MediaQuery.of(context).size.height - widget.margin.vertical,
-    );
-    
+    wmRect = RelativeRect.fromLTRB(
+      widget.margin.left,
+      widget.margin.top,
+      widget.margin.right,
+      widget.margin.bottom,
+    ).toRect(Offset.zero & MediaQuery.of(context).size);
+
+    final alwaysOnTopWindows = widget.alwaysOnTopWindows ?? [];
+
     return Provider<WindowHierarchyState>.value(
       value: this,
       updateShouldNotify: (previous, current) =>
@@ -93,7 +91,7 @@ class WindowHierarchyState extends State<WindowHierarchy> {
                       .toList(),
                 ),
               ),
-              widget.alwaysOnTopWindow ?? Container(),
+              ...alwaysOnTopWindows,
             ],
           ),
         );
@@ -110,18 +108,4 @@ class WindowHierarchyState extends State<WindowHierarchy> {
 
     return workList;
   }
-}
-
-class _WindowHierarchyInherithedWidget extends InheritedWidget {
-  final Widget child;
-  final WindowHierarchyState state;
-
-  _WindowHierarchyInherithedWidget({
-    @required this.state,
-    @required this.child,
-  }) : super(child: child);
-
-  @override
-  bool updateShouldNotify(_WindowHierarchyInherithedWidget oldWidget) =>
-      this.state != oldWidget.state;
 }

@@ -20,8 +20,6 @@ class _DefaultWindowToolbarState extends State<DefaultWindowToolbar> {
         : Colors.white;
 
     return GestureDetector(
-      onPanUpdate: onDrag,
-      onPanEnd: onDragEnd,
       child: SizedBox(
         height: 32,
         child: Material(
@@ -94,6 +92,8 @@ class _DefaultWindowToolbarState extends State<DefaultWindowToolbar> {
                   child: GestureDetector(
                     onTap: onTap,
                     onDoubleTap: onDoubleTap,
+                    onPanUpdate: onDrag,
+                    onPanEnd: onDragEnd,
                   ),
                 ),
               ],
@@ -128,7 +128,8 @@ class _DefaultWindowToolbarState extends State<DefaultWindowToolbar> {
       case WindowDock.BOTTOM:
       case WindowDock.BOTTOM_LEFT:
       case WindowDock.BOTTOM_RIGHT:
-        dockedToolbarOffset = hierarchy.constraints.maxHeight / 2;
+        dockedToolbarOffset =
+            hierarchy.wmRect.top + hierarchy.wmRect.height / 2;
         break;
       case WindowDock.NORMAL:
       default:
@@ -157,35 +158,34 @@ class _DefaultWindowToolbarState extends State<DefaultWindowToolbar> {
 
   void onDragEnd(details) {
     final entry = context.read<WindowEntry>();
-    if (_lastDetails.globalPosition.dy <= 2 &&
-            _lastDetails.globalPosition.dx <= 50 ||
-        _lastDetails.globalPosition.dy <= 50 &&
-            _lastDetails.globalPosition.dx <= 2) {
+    final rect = context.read<WindowHierarchyState>().wmRect;
+    final topEdge = _lastDetails.globalPosition.dy <= rect.top + 2;
+    final leftEdge = _lastDetails.globalPosition.dx <= rect.left + 2;
+    final rightEdge = _lastDetails.globalPosition.dx >= rect.right - 2;
+
+    if (topEdge && _lastDetails.globalPosition.dx <= rect.left + 2 ||
+        _lastDetails.globalPosition.dy <= rect.top + 50 && leftEdge) {
       entry.windowDock = WindowDock.TOP_LEFT;
       return;
     }
-    if (_lastDetails.globalPosition.dy <= 2 &&
-            _lastDetails.globalPosition.dx >=
-                MediaQuery.of(context).size.width - 50 ||
-        _lastDetails.globalPosition.dy <= 50 &&
-            _lastDetails.globalPosition.dx >=
-                MediaQuery.of(context).size.width - 2) {
+
+    if (topEdge && _lastDetails.globalPosition.dx >= rect.bottom - 50 ||
+        _lastDetails.globalPosition.dy <= rect.top + 50 && rightEdge) {
       entry.windowDock = WindowDock.TOP_RIGHT;
       return;
     }
 
-    if (_lastDetails.globalPosition.dy <= 2) {
+    if (topEdge) {
       entry.maximized = true;
       return;
     }
 
-    if (_lastDetails.globalPosition.dx <= 2) {
+    if (leftEdge) {
       entry.windowDock = WindowDock.LEFT;
       return;
     }
 
-    if (_lastDetails.globalPosition.dx >=
-        MediaQuery.of(context).size.width - 2) {
+    if (rightEdge) {
       entry.windowDock = WindowDock.RIGHT;
       return;
     }

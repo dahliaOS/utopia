@@ -27,42 +27,36 @@ class _WindowState extends State<Window> {
 
   @override
   void initState() {
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      final constraints =
-          Provider.of<WindowHierarchyState>(context, listen: false).constraints;
-      final offset = widget.entry.initiallyCenter
-          ? Offset(
-              (constraints.maxWidth / 2) - (widget.entry.initialSize.width / 2),
-              (constraints.maxHeight / 2) -
-                  (widget.entry.initialSize.height / 2),
-            )
-          : Offset.zero;
-      widget.entry.windowRect = offset & widget.entry.initialSize;
-    });
+    final hierarchy = Provider.of<WindowHierarchyState>(context, listen: false);
+    final wmRect = hierarchy.wmRect;
+    final offset = widget.entry.initiallyCenter
+        ? Offset(
+            wmRect.top +
+                (wmRect.width / 2) -
+                (widget.entry.initialSize.width / 2),
+            wmRect.left +
+                (wmRect.height / 2) -
+                (widget.entry.initialSize.height / 2),
+          )
+        : Offset.zero;
+    widget.entry.windowRect = offset & widget.entry.initialSize;
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
+    final mobileWindow = MediaQuery.of(context).size.width < 480;
     return ChangeNotifierProvider<WindowEntry>.value(
       value: widget.entry,
       builder: (context, child) {
         final entry = context.watch<WindowEntry>();
         final hierarchy = context.watch<WindowHierarchyState>();
-        final constraints = hierarchy.constraints;
 
         if (entry.minimized) return Container();
 
-        final docked = entry.maximized || entry.windowDock != WindowDock.NORMAL;
+        final docked = entry.maximized || entry.windowDock != WindowDock.NORMAL || mobileWindow;
 
-        Rect windowRect = entry.maximized
-            ? Rect.fromLTWH(
-                0,
-                0,
-                constraints.maxWidth,
-                constraints.maxHeight,
-              )
-            : getRect(entry);
+        Rect windowRect = getRect(entry, mobileWindow);
 
         return Positioned.fromRect(
           rect: windowRect,
@@ -90,7 +84,7 @@ class _WindowState extends State<Window> {
                       child: Column(
                         children: [
                           Visibility(
-                            visible: entry.usesToolbar,
+                            visible: entry.usesToolbar && !mobileWindow,
                             child: entry.toolbar ?? Container(),
                           ),
                           Expanded(
@@ -124,8 +118,8 @@ class _WindowState extends State<Window> {
                     entry.windowRect = Rect.fromLTWH(
                       entry.windowRect.left,
                       entry.windowRect.top,
-                      max(entry.minSize.width, entry.windowRect.width),
-                      max(entry.minSize.height, entry.windowRect.height),
+                      max(entry.minSize.width, windowRect.width),
+                      max(entry.minSize.height, windowRect.height),
                     );
                   },
                 ),
@@ -137,66 +131,89 @@ class _WindowState extends State<Window> {
     );
   }
 
-  Rect getRect(WindowEntry entry) {
+  Rect getRect(WindowEntry entry, bool mobileWindow) {
     final hierarchy = context.read<WindowHierarchyState>();
-    final constraints = hierarchy.constraints;
+    final wmRect = hierarchy.wmRect;
+
+    Rect _fromLTWH(
+      double left,
+      double top,
+      double right,
+      double bottom,
+    ) {
+      return Rect.fromLTWH(
+        left,
+        top,
+        right,
+        bottom,
+      );
+    }
+
+    if (entry.maximized || mobileWindow) {
+      return _fromLTWH(
+        0,
+        0,
+        wmRect.width,
+        wmRect.height,
+      );
+    }
 
     switch (entry.windowDock) {
       case WindowDock.TOP_LEFT:
-        return Rect.fromLTWH(
+        return _fromLTWH(
           0,
           0,
-          constraints.maxWidth / 2,
-          constraints.maxHeight / 2,
+          wmRect.width / 2,
+          wmRect.height / 2,
         );
       case WindowDock.TOP:
-        return Rect.fromLTWH(
+        return _fromLTWH(
           0,
           0,
-          constraints.maxWidth,
-          constraints.maxHeight / 2,
+          wmRect.width,
+          wmRect.height / 2,
         );
       case WindowDock.TOP_RIGHT:
-        return Rect.fromLTWH(
-          constraints.maxWidth / 2,
+        return _fromLTWH(
+          wmRect.width / 2,
           0,
-          constraints.maxWidth / 2,
-          constraints.maxHeight / 2,
+          wmRect.width / 2,
+          wmRect.height / 2,
         );
       case WindowDock.LEFT:
-        return Rect.fromLTWH(
+        return _fromLTWH(
           0,
           0,
-          constraints.maxWidth / 2,
-          constraints.maxHeight,
+          wmRect.width / 2,
+          wmRect.height,
         );
       case WindowDock.RIGHT:
-        return Rect.fromLTWH(
-          constraints.maxWidth / 2,
+        return _fromLTWH(
+          wmRect.width / 2,
           0,
-          constraints.maxWidth / 2,
-          constraints.maxHeight,
+          wmRect.width / 2,
+          wmRect.height,
         );
       case WindowDock.BOTTOM_LEFT:
-        return Rect.fromLTWH(
+        return _fromLTWH(
           0,
-          constraints.maxHeight / 2,
-          constraints.maxWidth / 2,
-          constraints.maxHeight / 2,
+          wmRect.height / 2,
+          wmRect.width / 2,
+          wmRect.height / 2,
         );
       case WindowDock.BOTTOM:
-        return Rect.fromLTWH(
+        return _fromLTWH(
           0,
-          constraints.maxHeight / 2,
-          constraints.maxWidth,
-          constraints.maxHeight / 2,
+          wmRect.height / 2,
+          wmRect.width,
+          wmRect.height / 2,
         );
       case WindowDock.BOTTOM_RIGHT:
-        return Rect.fromLTWH(
-          constraints.maxWidth / 2,
-          constraints.maxHeight / 2,
-          constraints.maxWidth / 2,
-          constraints.maxHeight / 2,
+        return _fromLTWH(
+          wmRect.width / 2,
+          wmRect.height / 2,
+          wmRect.width / 2,
+          wmRect.height / 2,
         );
       case WindowDock.NORMAL:
       default:
@@ -246,7 +263,5 @@ class _WindowState extends State<Window> {
       widget.entry.windowRect.right + _delta(right, Axis.horizontal),
       widget.entry.windowRect.bottom + _delta(bottom, Axis.vertical),
     );
-
-    setState(() {});
   }
 }

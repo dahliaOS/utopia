@@ -74,9 +74,12 @@ class _TaskBarItemState extends State<TaskBarItem>
                       onTap: () {
                         if (focused && !entry.minimized) {
                           entry.minimized = true;
-                          Provider.of<WindowHierarchyState>(context,
-                                  listen: false)
-                              .requestWindowFocus(windows[windows.length - 2]);
+                          if (windows.length > 1) {
+                            Provider.of<WindowHierarchyState>(context,
+                                    listen: false)
+                                .requestWindowFocus(
+                                    windows[windows.length - 2]);
+                          }
                         } else {
                           entry.minimized = false;
                           Provider.of<WindowHierarchyState>(context,
