@@ -47,7 +47,7 @@ class _TaskBarState extends State<TaskBar> with SingleTickerProviderStateMixin {
       builder: (context, _) {
         return Stack(
           children: [
-            IgnorePointer(
+            /*IgnorePointer(
               ignoring: _ac.value <= 0.5,
               child: GestureDetector(
                 onTap: () => _ac.fling(velocity: -1),
@@ -55,7 +55,7 @@ class _TaskBarState extends State<TaskBar> with SingleTickerProviderStateMixin {
                   color: Colors.black.withOpacity(_ac.value * 0.4),
                 ),
               ),
-            ),
+            ),*/
             Positioned(
               bottom: positionAnim.value,
               left: 0,

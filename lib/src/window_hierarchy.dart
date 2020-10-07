@@ -1,6 +1,7 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:wm/src/dismissible_overlay.dart';
+import 'package:wm/src/dismissible_overlay_entry.dart';
 import 'package:wm/src/window.dart';
 import 'package:wm/src/window_entry.dart';
 
@@ -13,7 +14,7 @@ class WindowHierarchy extends StatefulWidget {
     GlobalKey<WindowHierarchyState> key,
     this.rootWindow,
     this.alwaysOnTopWindows,
-    this.margin,
+    this.margin = const EdgeInsets.all(0),
   }) : super(key: key);
 
   @override
@@ -21,14 +22,17 @@ class WindowHierarchy extends StatefulWidget {
 }
 
 class WindowHierarchyState extends State<WindowHierarchy> {
-  final List<WindowEntry> _entries = [];
+  final List<WindowEntry> _windowEntries = [];
   final List<WindowEntryId> _focusTree = [];
+  final List<DismissibleOverlayEntry> _overlayEntries = [];
   final Map<WindowEntryId, GlobalKey> _windowKeys = {};
+  final Map<DismissibleOverlayEntryId, GlobalKey> _overlayKeys = {};
 
+  RelativeRect insets;
   Rect wmRect;
 
   void pushWindowEntry(WindowEntry entry) {
-    _entries.add(entry);
+    _windowEntries.add(entry);
     _focusTree.add(entry.id);
     _windowKeys[entry.id] = GlobalKey();
     WidgetsBinding.instance.addPostFrameCallback(
@@ -37,7 +41,7 @@ class WindowHierarchyState extends State<WindowHierarchy> {
   }
 
   void popWindowEntry(WindowEntry entry) {
-    _entries.removeWhere((e) => e.id == entry.id);
+    _windowEntries.remove(entry);
     _focusTree.remove(entry.id);
     _windowKeys.remove(entry.id);
     WidgetsBinding.instance.addPostFrameCallback(
@@ -52,24 +56,39 @@ class WindowHierarchyState extends State<WindowHierarchy> {
     WidgetsBinding.instance.addPostFrameCallback((_) => setState(() {}));
   }
 
-  List<WindowEntry> get windows => _entries;
+  void pushOverlayEntry(DismissibleOverlayEntry entry) {
+    if (_overlayEntries.any((e) => e.uniqueId == entry.uniqueId)) return;
+
+    _overlayEntries.add(entry);
+    _overlayKeys[entry.id] = GlobalKey();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) => setState(() {}));
+  }
+
+  void popOverlayEntry(DismissibleOverlayEntry entry) {
+    _overlayEntries.remove(entry);
+    _overlayKeys.remove(entry.id);
+
+    WidgetsBinding.instance.addPostFrameCallback((_) => setState(() {}));
+  }
+
+  List<WindowEntry> get windows => _windowEntries;
 
   @override
   Widget build(BuildContext context) {
-    wmRect = RelativeRect.fromLTRB(
+    insets = RelativeRect.fromLTRB(
       widget.margin.left,
       widget.margin.top,
       widget.margin.right,
       widget.margin.bottom,
-    ).toRect(Offset.zero & MediaQuery.of(context).size);
+    );
+    wmRect = insets.toRect(Offset.zero & MediaQuery.of(context).size);
 
     final alwaysOnTopWindows = widget.alwaysOnTopWindows ?? [];
 
     return Provider<WindowHierarchyState>.value(
       value: this,
-      updateShouldNotify: (previous, current) =>
-          listEquals(previous._entries, current._entries) ||
-          listEquals(previous._focusTree, current._focusTree),
+      updateShouldNotify: (previous, current) => true,
       builder: (context, _) {
         return GestureDetector(
           onTapDown: (details) {},
@@ -91,6 +110,14 @@ class WindowHierarchyState extends State<WindowHierarchy> {
                       .toList(),
                 ),
               ),
+              ..._overlayEntries
+                  .map(
+                    (e) => DismissibleOverlay(
+                      entry: e,
+                      key: _windowKeys[e.id],
+                    ),
+                  )
+                  .toList(),
               ...alwaysOnTopWindows,
             ],
           ),
@@ -103,7 +130,7 @@ class WindowHierarchyState extends State<WindowHierarchy> {
     List<WindowEntry> workList = [];
 
     for (WindowEntryId id in _focusTree) {
-      workList.add(_entries.firstWhere((element) => element.id == id));
+      workList.add(_windowEntries.firstWhere((element) => element.id == id));
     }
 
     return workList;

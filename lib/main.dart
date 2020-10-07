@@ -1,6 +1,7 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:wm/example.dart';
 import 'package:wm/src/window_entry.dart';
 import 'package:wm/src/window_hierarchy.dart';
@@ -75,14 +76,62 @@ class _MyHomePageState extends State<MyHomePage> {
                   color: Colors.grey[900],
                 ),
               ),
-              onTap: () {},
+              onTap: () {
+                key.currentState.pushOverlayEntry(
+                  DismissibleOverlayEntry(
+                    uniqueId: "qs",
+                    content: Builder(
+                      builder: (context) {
+                        final _ac =
+                            context.watch<DismissibleOverlayEntry>().animation;
+                        return AnimatedBuilder(
+                          animation: _ac,
+                          builder: (context, _) {
+                            return Positioned(
+                              bottom: key.currentState.insets.bottom + 16,
+                              right: 16,
+                              width: _ac.value * 360,
+                              height: _ac.value * 600,
+                              child: Card(),
+                            );
+                          },
+                        );
+                      },
+                    ),
+                    duration: Duration(milliseconds: 300),
+                    curve: Curves.fastLinearToSlowEaseIn,
+                    reverseCurve: Curves.fastOutSlowIn,
+                    /*background: Builder(
+                      builder: (context) {
+                        final _ac =
+                            context.watch<DismissibleOverlayEntry>().animation;
+                        return BackdropFilter(
+                          filter: ImageFilter.blur(
+                            sigmaX: 24,
+                            sigmaY: 24,
+                          ),
+                          child: AnimatedBuilder(
+                            animation: _ac,
+                            builder: (context, _) {
+                              return Material(
+                                color: Colors.grey[900]
+                                    .withOpacity(_ac.value * 0.7),
+                              );
+                            },
+                          ),
+                        );
+                      },
+                    ),*/
+                  ),
+                );
+              },
             ),
           ),
           Statusbar(),
         ],
         margin: EdgeInsets.only(
           top: 24,
-          bottom: 14,
+          bottom: 48,
         ),
       ),
     );
