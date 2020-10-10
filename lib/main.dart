@@ -5,7 +5,6 @@ import 'package:provider/provider.dart';
 import 'package:wm/example.dart';
 import 'package:wm/src/window_entry.dart';
 import 'package:wm/src/window_hierarchy.dart';
-import 'package:wm/statusbar.dart';
 import 'package:wm/taskbar.dart';
 import 'package:wm/wallpaper_layer.dart';
 import 'package:wm/wm.dart';
@@ -33,7 +32,6 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   final GlobalKey<WindowHierarchyState> key = GlobalKey<WindowHierarchyState>();
-  int windowIndex = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -43,7 +41,7 @@ class _MyHomePageState extends State<MyHomePage> {
         key: key,
         rootWindow: WallpaperLayer(),
         alwaysOnTopWindows: [
-          TaskBar(
+          Taskbar(
             alignment: TaskbarAlignment.LEFT,
             backgroundColor: Colors.white.withOpacity(0.7),
             itemColor: Colors.grey[900],
@@ -127,10 +125,8 @@ class _MyHomePageState extends State<MyHomePage> {
               },
             ),
           ),
-          Statusbar(),
         ],
         margin: EdgeInsets.only(
-          top: 24,
           bottom: 48,
         ),
       ),

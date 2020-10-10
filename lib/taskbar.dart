@@ -5,14 +5,14 @@ import 'package:provider/provider.dart';
 import 'package:wm/src/window_hierarchy.dart';
 import 'package:wm/taskbar_item.dart';
 
-class TaskBar extends StatefulWidget {
+class Taskbar extends StatefulWidget {
   final Widget leading;
   final Widget trailing;
   final TaskbarAlignment alignment;
   final Color backgroundColor;
   final Color itemColor;
 
-  TaskBar({
+  Taskbar({
     this.leading,
     this.alignment = TaskbarAlignment.LEFT,
     this.trailing,
@@ -21,150 +21,95 @@ class TaskBar extends StatefulWidget {
   });
 
   @override
-  _TaskBarState createState() => _TaskBarState();
+  _TaskbarState createState() => _TaskbarState();
 }
 
-class _TaskBarState extends State<TaskBar> with SingleTickerProviderStateMixin {
-  AnimationController _ac;
-
-  @override
-  void initState() {
-    _ac = AnimationController(
-      vsync: this,
-      duration: Duration(milliseconds: 300),
-    );
-
-    super.initState();
-  }
-
+class _TaskbarState extends State<Taskbar> with SingleTickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
-    Animation<double> positionAnim =
-        Tween<double>(begin: -34, end: 0).animate(_ac);
+    final appIcons = Align(
+      alignment: taskbarAlignment,
+      child: SingleChildScrollView(
+        reverse: widget.alignment == TaskbarAlignment.RIGHT,
+        scrollDirection: Axis.horizontal,
+        child: Row(
+          children: Provider.of<WindowHierarchyState>(context)
+              .windows
+              .map<Widget>(
+                (e) => TaskbarItem(
+                  entry: e,
+                  color: widget.itemColor,
+                ),
+              )
+              .toList()
+              .joinType(
+                SizedBox(
+                  width: 2,
+                ),
+              ),
+        ),
+      ),
+    );
 
-    return AnimatedBuilder(
-      animation: _ac,
-      builder: (context, _) {
-        return Stack(
-          children: [
-            /*IgnorePointer(
-              ignoring: _ac.value <= 0.5,
-              child: GestureDetector(
-                onTap: () => _ac.fling(velocity: -1),
-                child: Container(
-                  color: Colors.black.withOpacity(_ac.value * 0.4),
-                ),
-              ),
-            ),*/
-            Positioned(
-              bottom: positionAnim.value,
-              left: 0,
-              right: 0,
-              height: 48,
-              child: GestureDetector(
-                onVerticalDragUpdate: (details) {
-                  _ac.value -= details.primaryDelta / (48 - 14);
-                },
-                onVerticalDragEnd: (details) {
-                  if (_ac.value > 0.5) {
-                    _ac.fling(velocity: 1);
-                  } else {
-                    _ac.fling(velocity: -1);
-                  }
-                },
-                child: ClipRect(
-                  child: BackdropFilter(
-                    filter: ImageFilter.blur(
-                      sigmaX: 24,
-                      sigmaY: 24,
+    return Positioned(
+      bottom: 0,
+      left: 0,
+      right: 0,
+      height: 48,
+      child: ClipRect(
+        child: BackdropFilter(
+          filter: ImageFilter.blur(
+            sigmaX: 24,
+            sigmaY: 24,
+          ),
+          child: Material(
+            color: widget.backgroundColor,
+            child: Stack(
+              children: [
+                Row(
+                  children: [
+                    widget.leading ?? Container(),
+                    Expanded(
+                      child: widget.alignment != TaskbarAlignment.CENTER
+                          ? appIcons
+                          : Container(),
                     ),
-                    child: Material(
-                      color: widget.backgroundColor,
-                      child: Stack(
-                        children: [
-                          IgnorePointer(
-                            ignoring: _ac.value <= 0.5,
-                            child: Opacity(
-                              opacity: _ac.value,
-                              child: Row(
-                                children: [
-                                  widget.leading ?? Container(),
-                                  Expanded(
-                                    child: SingleChildScrollView(
-                                      scrollDirection: Axis.horizontal,
-                                      child: Row(
-                                        mainAxisAlignment: taskbarAlignment,
-                                        children:
-                                            Provider.of<WindowHierarchyState>(
-                                                    context)
-                                                .windows
-                                                .map<Widget>(
-                                                  (e) => TaskBarItem(
-                                                    entry: e,
-                                                    color: widget.itemColor,
-                                                  ),
-                                                )
-                                                .toList()
-                                                .joinType(
-                                                  SizedBox(
-                                                    width: 2,
-                                                  ),
-                                                ),
-                                      ),
-                                    ),
-                                  ),
-                                  widget.trailing ?? Container(),
-                                ],
-                              ),
-                            ),
-                          ),
-                          Opacity(
-                            opacity: 1 - _ac.value,
-                            child: Container(
-                              height: 14,
-                              alignment: Alignment.center,
-                              padding: EdgeInsets.symmetric(
-                                vertical: 5,
-                              ),
-                              child: SizedBox(
-                                width: 72,
-                                height: 4,
-                                child: Material(
-                                  shape: StadiumBorder(),
-                                  color: Colors.grey[900],
-                                ),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
+                    widget.trailing ?? Container(),
+                  ],
                 ),
-              ),
+                Positioned(
+                  left: 0,
+                  right: 0,
+                  bottom: 0,
+                  height: 48,
+                  child: widget.alignment == TaskbarAlignment.CENTER
+                      ? appIcons
+                      : Container(),
+                ),
+              ],
             ),
-          ],
-        );
-      },
+          ),
+        ),
+      ),
     );
   }
 
-  MainAxisAlignment get taskbarAlignment {
+  Alignment get taskbarAlignment {
     switch (widget.alignment) {
-      /*case TaskbarAlignment.CENTER:
-        return MainAxisAlignment.center;*/
+      case TaskbarAlignment.CENTER:
+        return Alignment.center;
       case TaskbarAlignment.RIGHT:
-        return MainAxisAlignment.end;
+        return Alignment.centerRight;
       case TaskbarAlignment.LEFT:
       default:
-        return MainAxisAlignment.start;
+        return Alignment.centerLeft;
     }
   }
 }
 
 enum TaskbarAlignment {
   LEFT,
-  //CENTER,
+  CENTER,
   RIGHT,
 }
 

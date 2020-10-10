@@ -3,20 +3,20 @@ import 'package:provider/provider.dart';
 import 'package:wm/src/window_entry.dart';
 import 'package:wm/src/window_hierarchy.dart';
 
-class TaskBarItem extends StatefulWidget {
+class TaskbarItem extends StatefulWidget {
   final WindowEntry entry;
   final Color color;
 
-  TaskBarItem({
+  TaskbarItem({
     @required this.entry,
     this.color,
   });
 
   @override
-  _TaskBarItemState createState() => _TaskBarItemState();
+  _TaskbarItemState createState() => _TaskbarItemState();
 }
 
-class _TaskBarItemState extends State<TaskBarItem>
+class _TaskbarItemState extends State<TaskbarItem>
     with SingleTickerProviderStateMixin {
   AnimationController _ac;
   Animation<double> _anim;
