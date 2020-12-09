@@ -10,7 +10,7 @@ class DefaultWindowToolbar extends StatefulWidget {
 }
 
 class _DefaultWindowToolbarState extends State<DefaultWindowToolbar> {
-  DragUpdateDetails _lastDetails;
+  late DragUpdateDetails _lastDetails;
 
   @override
   Widget build(BuildContext context) {
@@ -36,7 +36,7 @@ class _DefaultWindowToolbarState extends State<DefaultWindowToolbar> {
                     SizedBox(width: 8),
                     entry.icon != null
                         ? Image(
-                            image: entry.icon ?? ImageProvider,
+                            image: entry.icon!,
                             width: 20,
                             height: 20,
                           )
@@ -207,11 +207,11 @@ class _DefaultWindowToolbarState extends State<DefaultWindowToolbar> {
 class WindowToolbarButton extends StatelessWidget {
   final IconData icon;
   final VoidCallback onTap;
-  final Color hoverColor;
+  final Color? hoverColor;
 
   WindowToolbarButton({
-    @required this.icon,
-    @required this.onTap,
+    required this.icon,
+    required this.onTap,
     this.hoverColor,
   });
 

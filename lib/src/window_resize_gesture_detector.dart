@@ -2,13 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 
 class WindowResizeGestureDetector extends StatelessWidget {
-  final double borderThickness;
+  final double? borderThickness;
   final Map<Alignment, GestureDragUpdateCallback> listeners;
-  final GestureDragEndCallback onPanEnd;
+  final GestureDragEndCallback? onPanEnd;
 
   WindowResizeGestureDetector({
     this.borderThickness,
-    @required this.listeners,
+    required this.listeners,
     this.onPanEnd,
   });
 
@@ -88,9 +88,9 @@ class WindowResizeGestureDetector extends StatelessWidget {
   }
 
   Widget buildGestureDetector(
-    double width,
-    double height,
-    GestureDragUpdateCallback onPanUpdate,
+    double? width,
+    double? height,
+    GestureDragUpdateCallback? onPanUpdate,
     SystemMouseCursor cursor,
   ) {
     return SizedBox(

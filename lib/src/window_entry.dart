@@ -8,16 +8,16 @@ import 'package:utopia_wm/wm.dart';
 
 class WindowEntry extends ChangeNotifier {
   final WindowEntryId id;
-  String _title;
-  ImageProvider _icon;
+  String? _title;
+  ImageProvider? _icon;
   final Widget content;
   bool _usesToolbar;
   Color _toolbarColor;
   final Size initialSize;
   final bool initiallyCenter;
   final Size minSize;
-  Rect _windowRect;
-  Widget _toolbar;
+  late Rect _windowRect;
+  Widget? _toolbar;
   bool _maximized = false;
   bool _minimized = false;
   WindowDock _windowDock = WindowDock.NORMAL;
@@ -28,23 +28,23 @@ class WindowEntry extends ChangeNotifier {
 
   final GlobalKey repaintBoundaryKey = GlobalKey();
 
-  String get title => _title;
-  ImageProvider get icon => _icon;
+  String? get title => _title;
+  ImageProvider? get icon => _icon;
   bool get usesToolbar => _usesToolbar;
   Color get toolbarColor => _toolbarColor;
   Rect get windowRect => _windowRect;
-  Widget get toolbar => _toolbar;
+  Widget? get toolbar => _toolbar;
   bool get maximized => _maximized;
   bool get minimized => _minimized;
   WindowDock get windowDock => _windowDock;
   ShapeBorder get shape => _shape;
 
-  set title(String value) {
+  set title(String? value) {
     _title = value;
     notifyListeners();
   }
 
-  set icon(ImageProvider value) {
+  set icon(ImageProvider? value) {
     _icon = value;
     notifyListeners();
   }
@@ -64,7 +64,7 @@ class WindowEntry extends ChangeNotifier {
     notifyListeners();
   }
 
-  set toolbar(Widget value) {
+  set toolbar(Widget? value) {
     _toolbar = value;
     notifyListeners();
   }
@@ -85,12 +85,12 @@ class WindowEntry extends ChangeNotifier {
   }
 
   WindowEntry({
-    String title,
-    ImageProvider icon,
-    @required this.content,
+    String? title,
+    ImageProvider? icon,
+    required this.content,
     bool usesToolbar = false,
     Color toolbarColor = const Color(0xFF212121),
-    Widget toolbar,
+    Widget? toolbar,
     this.initialSize = const Size(600, 480),
     this.initiallyCenter = false,
     this.minSize = const Size.square(100),
@@ -107,42 +107,41 @@ class WindowEntry extends ChangeNotifier {
         _shape = shape;
 
   WindowEntry.withDefaultToolbar({
-    String title,
-    ImageProvider icon,
-    @required this.content,
+    String? title,
+    ImageProvider? icon,
+    required this.content,
     Color toolbarColor = const Color(0xFF212121),
     this.initialSize = const Size(600, 480),
     this.initiallyCenter = true,
     this.minSize = const Size(300, 200),
-    ShapeBorder shape,
+    ShapeBorder? shape,
     this.bgColor = Colors.transparent,
     this.elevation = 4,
     this.allowResize = true,
   })  : id = WindowEntryId(),
         _title = title,
         _toolbarColor = toolbarColor,
-        _icon = icon {
-    _shape = shape ??
-        RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(4),
-        );
-    usesToolbar = true;
-    toolbar = DefaultWindowToolbar();
-  }
+        _icon = icon,
+        _shape = shape ??
+            RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(4),
+            ),
+        _usesToolbar = true,
+        _toolbar = DefaultWindowToolbar();
 
   void toggleMaximize() {
     maximized = !maximized;
   }
 
   Future<Uint8List> getScreenshot() async {
-    final box = repaintBoundaryKey.currentContext.findRenderObject()
+    final box = repaintBoundaryKey.currentContext!.findRenderObject()
         as RenderRepaintBoundary;
     final image = await box.toImage();
     final byteData = await image.toByteData(
       format: ImageByteFormat.png,
     );
 
-    return byteData.buffer.asUint8List();
+    return byteData!.buffer.asUint8List();
   }
 }
 

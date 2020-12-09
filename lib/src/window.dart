@@ -7,19 +7,19 @@ import 'package:utopia_wm/src/window_hierarchy.dart';
 import 'package:utopia_wm/src/window_resize_gesture_detector.dart';
 
 class Window extends StatefulWidget {
-  final Key key;
+  final Key? key;
   final WindowEntry entry;
 
   Window({
     this.key,
-    @required this.entry,
+    required this.entry,
   }) : super(key: key);
 
   _WindowState createState() => _WindowState();
 
   @override
   String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) =>
-      entry.title;
+      entry.title ?? "";
 }
 
 class _WindowState extends State<Window> {

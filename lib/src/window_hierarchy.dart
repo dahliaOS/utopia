@@ -8,12 +8,12 @@ import 'package:utopia_wm/src/window.dart';
 import 'package:utopia_wm/src/window_entry.dart';
 
 class WindowHierarchy extends StatefulWidget {
-  final Widget rootWindow;
-  final List<Widget> alwaysOnTopWindows;
+  final Widget? rootWindow;
+  final List<Widget>? alwaysOnTopWindows;
   final EdgeInsets margin;
 
   WindowHierarchy({
-    GlobalKey<WindowHierarchyState> key,
+    GlobalKey<WindowHierarchyState>? key,
     this.rootWindow,
     this.alwaysOnTopWindows,
     this.margin = const EdgeInsets.all(0),
@@ -32,8 +32,8 @@ class WindowHierarchyState extends State<WindowHierarchy> {
 
   //bool _showWindowSwitcher = false;
 
-  RelativeRect insets;
-  Rect wmRect;
+  late RelativeRect insets;
+  late Rect wmRect;
 
   /*@override
   void initState() {
@@ -51,7 +51,7 @@ class WindowHierarchyState extends State<WindowHierarchy> {
     _windowEntries.add(entry);
     _focusTree.add(entry.id);
     _windowKeys[entry.id] = GlobalKey();
-    WidgetsBinding.instance.addPostFrameCallback(
+    WidgetsBinding.instance!.addPostFrameCallback(
       (_) => setState(() {}),
     );
   }
@@ -60,7 +60,7 @@ class WindowHierarchyState extends State<WindowHierarchy> {
     _windowEntries.remove(entry);
     _focusTree.remove(entry.id);
     _windowKeys.remove(entry.id);
-    WidgetsBinding.instance.addPostFrameCallback(
+    WidgetsBinding.instance!.addPostFrameCallback(
       (_) => setState(() {}),
     );
   }
@@ -69,7 +69,7 @@ class WindowHierarchyState extends State<WindowHierarchy> {
     _focusTree.remove(entry.id);
     _focusTree.add(entry.id);
 
-    WidgetsBinding.instance.addPostFrameCallback((_) => setState(() {}));
+    WidgetsBinding.instance!.addPostFrameCallback((_) => setState(() {}));
   }
 
   void pushOverlayEntry(DismissibleOverlayEntry entry) {
@@ -78,14 +78,14 @@ class WindowHierarchyState extends State<WindowHierarchy> {
     _overlayEntries.add(entry);
     _overlayKeys[entry.id] = GlobalKey();
 
-    WidgetsBinding.instance.addPostFrameCallback((_) => setState(() {}));
+    WidgetsBinding.instance!.addPostFrameCallback((_) => setState(() {}));
   }
 
   void popOverlayEntry(DismissibleOverlayEntry entry) {
     _overlayEntries.remove(entry);
     _overlayKeys.remove(entry.id);
 
-    WidgetsBinding.instance.addPostFrameCallback((_) => setState(() {}));
+    WidgetsBinding.instance!.addPostFrameCallback((_) => setState(() {}));
   }
 
   List<WindowEntry> get windows => _windowEntries;
@@ -117,7 +117,7 @@ class WindowHierarchyState extends State<WindowHierarchy> {
               onTap: _dismissOverlay,
               behavior: HitTestBehavior.deferToChild,
               child: Container(
-                margin: widget.margin ?? EdgeInsets.zero,
+                margin: widget.margin,
                 child: Stack(
                   clipBehavior: Clip.none,
                   children: entriesByFocus

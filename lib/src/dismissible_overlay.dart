@@ -6,8 +6,8 @@ class DismissibleOverlay extends StatefulWidget {
   final DismissibleOverlayEntry entry;
 
   DismissibleOverlay({
-    Key key,
-    @required this.entry,
+    Key? key,
+    required this.entry,
   }) : super(key: key);
 
   @override
