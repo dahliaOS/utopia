@@ -113,7 +113,7 @@ class WindowEntry extends ChangeNotifier {
     Color toolbarColor = const Color(0xFF212121),
     this.initialSize = const Size(600, 480),
     this.initiallyCenter = true,
-    this.minSize = const Size(200, 32),
+    this.minSize = const Size(300, 200),
     ShapeBorder shape,
     this.bgColor = Colors.transparent,
     this.elevation = 4,
@@ -135,7 +135,8 @@ class WindowEntry extends ChangeNotifier {
   }
 
   Future<Uint8List> getScreenshot() async {
-    final box = repaintBoundaryKey.currentContext.findRenderObject() as RenderRepaintBoundary;
+    final box = repaintBoundaryKey.currentContext.findRenderObject()
+        as RenderRepaintBoundary;
     final image = await box.toImage();
     final byteData = await image.toByteData(
       format: ImageByteFormat.png,

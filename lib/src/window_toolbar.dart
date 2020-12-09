@@ -169,7 +169,7 @@ class _DefaultWindowToolbarState extends State<DefaultWindowToolbar> {
       return;
     }
 
-    if (topEdge && _lastDetails.globalPosition.dx >= rect.bottom - 50 ||
+    if (topEdge && _lastDetails.globalPosition.dx >= rect.right - 50 ||
         _lastDetails.globalPosition.dy <= rect.top + 50 && rightEdge) {
       entry.windowDock = WindowDock.TOP_RIGHT;
       return;

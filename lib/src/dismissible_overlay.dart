@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:wm/src/dismissible_overlay_entry.dart';
-import 'package:wm/src/window_hierarchy.dart';
 
 class DismissibleOverlay extends StatefulWidget {
   final DismissibleOverlayEntry entry;
@@ -33,6 +32,11 @@ class _DismissibleOverlayState extends State<DismissibleOverlay>
     super.initState();
   }
 
+  void dispose() {
+    widget.entry.animationController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider<DismissibleOverlayEntry>.value(
@@ -42,21 +46,9 @@ class _DismissibleOverlayState extends State<DismissibleOverlay>
 
         return Stack(
           children: [
-            SizedBox.expand(
-              child: GestureDetector(
-                onTap: entry.enableDismiss
-                    ? () async {
-                        await entry.animationController.animateBack(0);
-                        context
-                            .read<WindowHierarchyState>()
-                            .popOverlayEntry(entry);
-                        setState(() {});
-                      }
-                    : null,
-                behavior: HitTestBehavior.opaque,
-                child: entry.background ?? Container(
-                  color: Colors.transparent,
-                ),
+            IgnorePointer(
+              child: SizedBox.expand(
+                child: entry.background ?? Container(color: Colors.transparent),
               ),
             ),
             entry.content,

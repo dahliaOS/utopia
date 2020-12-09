@@ -52,79 +52,83 @@ class _WindowState extends State<Window> {
         final entry = context.watch<WindowEntry>();
         final hierarchy = context.watch<WindowHierarchyState>();
 
-        if (entry.minimized) return Container();
-
-        final docked = entry.maximized || entry.windowDock != WindowDock.NORMAL || mobileWindow;
+        final docked = entry.maximized ||
+            entry.windowDock != WindowDock.NORMAL ||
+            mobileWindow;
 
         Rect windowRect = getRect(entry, mobileWindow);
 
         return Positioned.fromRect(
           rect: windowRect,
-          child: Stack(
-            children: [
-              GestureDetector(
-                onPanStart: (details) {
-                  hierarchy.requestWindowFocus(entry);
-                  setState(() {});
-                },
-                onTapDown: (details) {
-                  hierarchy.requestWindowFocus(entry);
-                  setState(() {});
-                },
-                behavior: HitTestBehavior.translucent,
-                child: Material(
-                  shape: docked ? RoundedRectangleBorder() : entry.shape,
-                  clipBehavior: Clip.antiAlias,
-                  elevation: entry.maximized ? 0 : entry.elevation,
-                  color: entry.bgColor,
-                  child: SingleChildScrollView(
-                    physics: NeverScrollableScrollPhysics(),
-                    child: SizedBox(
-                      height: max(entry.minSize.height, windowRect.size.height),
-                      child: Column(
-                        children: [
-                          Visibility(
-                            visible: entry.usesToolbar && !mobileWindow,
-                            child: entry.toolbar ?? Container(),
-                          ),
-                          Expanded(
-                            child: RepaintBoundary(
-                              key: entry.repaintBoundaryKey,
-                              child: MediaQuery(
-                                data: MediaQueryData(
-                                  size: Size(
-                                    windowRect.width,
-                                    windowRect.height - entry.minSize.height,
+          child: Offstage(
+            offstage: entry.minimized,
+            child: Stack(
+              children: [
+                GestureDetector(
+                  onPanStart: (details) {
+                    hierarchy.requestWindowFocus(entry);
+                    setState(() {});
+                  },
+                  onTapDown: (details) {
+                    hierarchy.requestWindowFocus(entry);
+                    setState(() {});
+                  },
+                  behavior: HitTestBehavior.translucent,
+                  child: Material(
+                    shape: docked ? RoundedRectangleBorder() : entry.shape,
+                    clipBehavior: Clip.antiAlias,
+                    elevation: entry.maximized ? 0 : entry.elevation,
+                    color: entry.bgColor,
+                    child: SingleChildScrollView(
+                      physics: NeverScrollableScrollPhysics(),
+                      child: SizedBox(
+                        height:
+                            max(entry.minSize.height, windowRect.size.height),
+                        child: Column(
+                          children: [
+                            Visibility(
+                              visible: entry.usesToolbar && !mobileWindow,
+                              child: entry.toolbar ?? Container(),
+                            ),
+                            Expanded(
+                              child: RepaintBoundary(
+                                key: entry.repaintBoundaryKey,
+                                child: MediaQuery(
+                                  data: MediaQueryData(
+                                    size: Size(
+                                      windowRect.width,
+                                      windowRect.height - entry.minSize.height,
+                                    ),
                                   ),
-                                ),
-                                child: ClipRect(
-                                  child: entry.content,
+                                  child: ClipRect(
+                                    child: entry.content,
+                                  ),
                                 ),
                               ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
                     ),
                   ),
                 ),
-              ),
-              Visibility(
-                visible: !docked && entry.allowResize,
-                child: WindowResizeGestureDetector(
-                  borderThickness: _resizingSpacing,
-                  listeners: _listeners,
-                  onPanEnd: (details) {
-                    entry.windowRect = Rect.fromLTWH(
-                      entry.windowRect.left,
-                      entry.windowRect.top,
-                      max(entry.minSize.width, windowRect.width),
-                      max(entry.minSize.height, windowRect.height),
-                    );
-                  },
+                Visibility(
+                  visible: !docked && entry.allowResize,
+                  child: WindowResizeGestureDetector(
+                    borderThickness: _resizingSpacing,
+                    listeners: _listeners,
+                    onPanEnd: (details) {
+                      entry.windowRect = Rect.fromLTWH(
+                        entry.windowRect.left,
+                        entry.windowRect.top,
+                        max(entry.minSize.width, windowRect.width),
+                        max(entry.minSize.height, windowRect.height),
+                      );
+                    },
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         );
       },

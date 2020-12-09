@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:wm/src/dismissible_overlay.dart';
@@ -28,8 +30,22 @@ class WindowHierarchyState extends State<WindowHierarchy> {
   final Map<WindowEntryId, GlobalKey> _windowKeys = {};
   final Map<DismissibleOverlayEntryId, GlobalKey> _overlayKeys = {};
 
+  //bool _showWindowSwitcher = false;
+
   RelativeRect insets;
   Rect wmRect;
+
+  /*@override
+  void initState() {
+    super.initState();
+    RawKeyboard.instance.addListener(_windowSwitcherListener);
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    RawKeyboard.instance.removeListener(_windowSwitcherListener);
+  }*/
 
   void pushWindowEntry(WindowEntry entry) {
     _windowEntries.add(entry);
@@ -90,13 +106,17 @@ class WindowHierarchyState extends State<WindowHierarchy> {
       value: this,
       updateShouldNotify: (previous, current) => true,
       builder: (context, _) {
-        return GestureDetector(
-          onTapDown: (details) {},
-          behavior: HitTestBehavior.opaque,
-          child: Stack(
-            children: [
-              widget.rootWindow ?? Container(),
-              Container(
+        return Stack(
+          children: [
+            GestureDetector(
+              onTap: _dismissOverlay,
+              behavior: HitTestBehavior.deferToChild,
+              child: widget.rootWindow ?? Container(),
+            ),
+            GestureDetector(
+              onTap: _dismissOverlay,
+              behavior: HitTestBehavior.deferToChild,
+              child: Container(
                 margin: widget.margin ?? EdgeInsets.zero,
                 child: Stack(
                   clipBehavior: Clip.none,
@@ -110,20 +130,38 @@ class WindowHierarchyState extends State<WindowHierarchy> {
                       .toList(),
                 ),
               ),
-              ..._overlayEntries
-                  .map(
-                    (e) => DismissibleOverlay(
-                      entry: e,
-                      key: _windowKeys[e.id],
-                    ),
-                  )
-                  .toList(),
-              ...alwaysOnTopWindows,
-            ],
-          ),
+            ),
+            ..._overlayEntries
+                .map(
+                  (e) => DismissibleOverlay(
+                    entry: e,
+                    key: _overlayKeys[e.id],
+                  ),
+                )
+                .toList(),
+            GestureDetector(
+              onTap: _dismissOverlay,
+              behavior: HitTestBehavior.deferToChild,
+              child: Stack(
+                clipBehavior: Clip.none,
+                fit: StackFit.passthrough,
+                children: alwaysOnTopWindows,
+              ),
+            ),
+          ],
         );
       },
     );
+  }
+
+  void _dismissOverlay() async {
+    print("Ok");
+    if (_overlayEntries.isNotEmpty) {
+      final entry = _overlayEntries.last;
+      await entry.animationController.reverse();
+      popOverlayEntry(entry);
+      setState(() {});
+    }
   }
 
   List<WindowEntry> get entriesByFocus {
@@ -135,4 +173,20 @@ class WindowHierarchyState extends State<WindowHierarchy> {
 
     return workList;
   }
+
+  /*void _windowSwitcherListener(RawKeyEvent event) {
+    if (event.isControlPressed) {
+      if (event.logicalKey == LogicalKeyboardKey.tab) {
+        if (_showWindowSwitcher) {
+          requestWindowFocus(entriesByFocus.last);
+        } else {
+          _showWindowSwitcher = true;
+        }
+        setState(() {});
+      }
+    } else {
+      _showWindowSwitcher = false;
+      setState(() {});
+    }
+  }*/
 }
