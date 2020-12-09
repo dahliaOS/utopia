@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:wm/src/dismissible_overlay_entry.dart';
+import 'package:utopia_wm/src/dismissible_overlay_entry.dart';
 
 class DismissibleOverlay extends StatefulWidget {
   final DismissibleOverlayEntry entry;

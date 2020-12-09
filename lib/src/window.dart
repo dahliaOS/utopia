@@ -2,9 +2,9 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:wm/src/window_entry.dart';
-import 'package:wm/src/window_hierarchy.dart';
-import 'package:wm/src/window_resize_gesture_detector.dart';
+import 'package:utopia_wm/src/window_entry.dart';
+import 'package:utopia_wm/src/window_hierarchy.dart';
+import 'package:utopia_wm/src/window_resize_gesture_detector.dart';
 
 class Window extends StatefulWidget {
   final Key key;

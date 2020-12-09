@@ -2,10 +2,10 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:wm/src/dismissible_overlay.dart';
-import 'package:wm/src/dismissible_overlay_entry.dart';
-import 'package:wm/src/window.dart';
-import 'package:wm/src/window_entry.dart';
+import 'package:utopia_wm/src/dismissible_overlay.dart';
+import 'package:utopia_wm/src/dismissible_overlay_entry.dart';
+import 'package:utopia_wm/src/window.dart';
+import 'package:utopia_wm/src/window_entry.dart';
 
 class WindowHierarchy extends StatefulWidget {
   final Widget rootWindow;

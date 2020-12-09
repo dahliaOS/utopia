@@ -3,8 +3,8 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:wm/src/window_toolbar.dart';
-import 'package:wm/wm.dart';
+import 'package:utopia_wm/src/window_toolbar.dart';
+import 'package:utopia_wm/wm.dart';
 
 class WindowEntry extends ChangeNotifier {
   final WindowEntryId id;
