@@ -1,5 +1,5 @@
-name: utopia_wm
-description: Pangolin-desktop wm interface and hierarchy provider
+name: example
+description: utopia_wm test environment
 publish_to: 'none'
 version: 1.0.0+1
 
@@ -10,8 +10,12 @@ dependencies:
   flutter:
     sdk: flutter
   
-  provider: ^5.0.0-nullsafe1
+  utopia_wm:
+    path: ..
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
+
+flutter:
+  uses-material-design: true
