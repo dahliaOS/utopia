@@ -155,7 +155,6 @@ class WindowHierarchyState extends State<WindowHierarchy> {
   }
 
   void _dismissOverlay() async {
-    print("Ok");
     if (_overlayEntries.isNotEmpty) {
       final entry = _overlayEntries.last;
       await entry.animationController.reverse();

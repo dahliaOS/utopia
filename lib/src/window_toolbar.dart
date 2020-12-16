@@ -51,7 +51,7 @@ class _DefaultWindowToolbarState extends State<DefaultWindowToolbar> {
                     ),
                     Spacer(),
                     WindowToolbarButton(
-                      icon: Icons.minimize,
+                      icon: Icon(Icons.minimize),
                       onTap: () {
                         final hierarchy = context.read<WindowHierarchyState>();
                         final windows = hierarchy.entriesByFocus;
@@ -65,8 +65,8 @@ class _DefaultWindowToolbarState extends State<DefaultWindowToolbar> {
                     ),
                     WindowToolbarButton(
                       icon: entry.maximized
-                          ? Icons.unfold_less
-                          : Icons.unfold_more,
+                          ? Icon(_ToolbarIcons.minimize)
+                          : Icon(_ToolbarIcons.maximize),
                       onTap: () {
                         context
                             .read<WindowHierarchyState>()
@@ -78,7 +78,7 @@ class _DefaultWindowToolbarState extends State<DefaultWindowToolbar> {
                       },
                     ),
                     WindowToolbarButton(
-                      icon: Icons.close,
+                      icon: Icon(Icons.close),
                       onTap: onClose,
                       hoverColor: Colors.red,
                     ),
@@ -205,7 +205,7 @@ class _DefaultWindowToolbarState extends State<DefaultWindowToolbar> {
 }
 
 class WindowToolbarButton extends StatelessWidget {
-  final IconData icon;
+  final Widget icon;
   final VoidCallback onTap;
   final Color? hoverColor;
 
@@ -224,11 +224,21 @@ class WindowToolbarButton extends StatelessWidget {
         child: InkWell(
           hoverColor: hoverColor,
           onTap: onTap,
-          child: Icon(
-            icon,
-          ),
+          child: icon,
         ),
       ),
     );
   }
+}
+
+class _ToolbarIcons {
+  _ToolbarIcons._();
+
+  static const _kFontFam = 'CustomIcons';
+  static const _kFontPkg = 'utopia_wm';
+
+  static const IconData maximize =
+      IconData(0xe800, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData minimize =
+      IconData(0xe801, fontFamily: _kFontFam, fontPackage: _kFontPkg);
 }
