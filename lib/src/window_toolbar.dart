@@ -21,7 +21,7 @@ class _DefaultWindowToolbarState extends State<DefaultWindowToolbar> {
 
     return GestureDetector(
       child: SizedBox(
-        height: 32,
+        height: 35,
         child: Material(
           color: entry.toolbarColor,
           child: IconTheme.merge(
@@ -31,58 +31,68 @@ class _DefaultWindowToolbarState extends State<DefaultWindowToolbar> {
             ),
             child: Stack(
               children: [
-                Row(
-                  children: [
-                    SizedBox(width: 8),
-                    entry.icon != null
-                        ? Image(
-                            image: entry.icon!,
-                            width: 20,
-                            height: 20,
-                          )
-                        : Container(),
-                    SizedBox(width: 8),
-                    Text(
-                      entry.title ?? "",
-                      style: TextStyle(
-                        color: fgColor,
-                      ),
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                    Spacer(),
-                    WindowToolbarButton(
-                      icon: Icon(Icons.minimize),
-                      onTap: () {
-                        final hierarchy = context.read<WindowHierarchyState>();
-                        final windows = hierarchy.entriesByFocus;
+                Align(
+                  alignment: Alignment.center,
+                  child: Row(
+                    children: [
+                      SizedBox(width: 8),
+                      entry.icon != null
+                          ? Image(
+                              image: entry.icon!,
+                              width: 20,
+                              height: 20,
+                            )
+                          : Container(),
+                      SizedBox(width: 8),
+                      Spacer(),
+                      WindowToolbarButton(
+                        icon: Icon(Icons.minimize),
+                        onTap: () {
+                          final hierarchy =
+                              context.read<WindowHierarchyState>();
+                          final windows = hierarchy.entriesByFocus;
 
-                        entry.minimized = true;
-                        if (windows.length > 1) {
-                          hierarchy
-                              .requestWindowFocus(windows[windows.length - 2]);
-                        }
-                      },
+                          entry.minimized = true;
+                          if (windows.length > 1) {
+                            hierarchy.requestWindowFocus(
+                                windows[windows.length - 2]);
+                          }
+                        },
+                        hoverColor: Colors.black.withOpacity(0.2),
+                      ),
+                      WindowToolbarButton(
+                        icon: entry.maximized
+                            ? Icon(_ToolbarIcons.minimize)
+                            : Icon(_ToolbarIcons.maximize),
+                        onTap: () {
+                          context
+                              .read<WindowHierarchyState>()
+                              .requestWindowFocus(entry);
+                          entry.toggleMaximize();
+                          if (!entry.maximized) {
+                            entry.windowDock = WindowDock.NORMAL;
+                          }
+                        },
+                        hoverColor: Colors.black.withOpacity(0.2),
+                      ),
+                      WindowToolbarButton(
+                        icon: Icon(Icons.close),
+                        onTap: onClose,
+                        hoverColor: Colors.black.withOpacity(0.2),
+                      ),
+                      SizedBox(width: 2),
+                    ],
+                  ),
+                ),
+                Align(
+                  alignment: Alignment.center,
+                  child: Text(
+                    entry.title ?? "",
+                    style: TextStyle(
+                      color: fgColor,
                     ),
-                    WindowToolbarButton(
-                      icon: entry.maximized
-                          ? Icon(_ToolbarIcons.minimize)
-                          : Icon(_ToolbarIcons.maximize),
-                      onTap: () {
-                        context
-                            .read<WindowHierarchyState>()
-                            .requestWindowFocus(entry);
-                        entry.toggleMaximize();
-                        if (!entry.maximized) {
-                          entry.windowDock = WindowDock.NORMAL;
-                        }
-                      },
-                    ),
-                    WindowToolbarButton(
-                      icon: Icon(Icons.close),
-                      onTap: onClose,
-                      hoverColor: Colors.red,
-                    ),
-                  ],
+                    overflow: TextOverflow.ellipsis,
+                  ),
                 ),
                 Positioned(
                   top: 0,
@@ -220,6 +230,8 @@ class WindowToolbarButton extends StatelessWidget {
     return SizedBox.fromSize(
       size: Size.square(32),
       child: Material(
+        clipBehavior: Clip.antiAlias,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(32)),
         color: Colors.transparent,
         child: InkWell(
           hoverColor: hoverColor,
