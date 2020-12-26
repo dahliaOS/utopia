@@ -72,6 +72,20 @@ class WindowHierarchyState extends State<WindowHierarchy> {
     WidgetsBinding.instance!.addPostFrameCallback((_) => setState(() {}));
   }
 
+  void toggleOverlayEntry(DismissibleOverlayEntry entry) {
+    if (!_overlayEntries.any((e) => e.uniqueId == entry.uniqueId)) {
+      pushOverlayEntry(entry);
+    } else {
+      late DismissibleOverlayEntry _toBeRemoved;
+      _overlayEntries.forEach((element) {
+        if (element.uniqueId == entry.uniqueId) {
+          _toBeRemoved = element;
+        }
+      });
+      popOverlayEntry(_toBeRemoved);
+    }
+  }
+
   void pushOverlayEntry(DismissibleOverlayEntry entry) {
     if (_overlayEntries.any((e) => e.uniqueId == entry.uniqueId)) return;
 

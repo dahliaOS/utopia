@@ -78,7 +78,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 ),
               ),
               onTap: () {
-                key.currentState!.pushOverlayEntry(
+                key.currentState!.toggleOverlayEntry(
                   DismissibleOverlayEntry(
                     uniqueId: "qs",
                     content: Builder(
