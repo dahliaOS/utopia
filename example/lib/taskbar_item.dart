@@ -14,9 +14,10 @@ class TaskbarItem extends StatefulWidget {
   final Color color;
 
   TaskbarItem({
+    Key? key,
     required this.entry,
     this.color = Colors.black,
-  });
+  }) : super(key: key);
 
   @override
   _TaskbarItemState createState() => _TaskbarItemState();
@@ -124,14 +125,18 @@ class _TaskbarItemState extends State<TaskbarItem>
                                       child: Row(
                                         children: [
                                           SizedBox(width: 8),
-                                          if (entry.icon != null)
-                                            Image(
-                                              image: entry.icon!,
-                                              width: 16,
-                                              height: 16,
-                                            ),
-                                          if (entry.icon != null)
-                                            SizedBox(width: 4),
+                                          entry.icon != null
+                                              ? Image(
+                                                  image: entry.icon!,
+                                                  width: 16,
+                                                  height: 16,
+                                                )
+                                              : Icon(
+                                                  Icons.apps,
+                                                  size: 16,
+                                                  color: widget.color,
+                                                ),
+                                          SizedBox(width: 4),
                                           Text(entry.title ?? ""),
                                           Spacer(),
                                           SizedBox.fromSize(
@@ -213,13 +218,20 @@ class _TaskbarItemState extends State<TaskbarItem>
                                   ),
                                 ),
                               ),
-                              if (entry.icon != null)
-                                Padding(
-                                  padding: EdgeInsets.all(8),
-                                  child: Image(
-                                    image: entry.icon!,
-                                  ),
-                                ),
+                              entry.icon != null
+                                  ? Padding(
+                                      padding: EdgeInsets.all(8),
+                                      child: Image(
+                                        image: entry.icon!,
+                                      ),
+                                    )
+                                  : Center(
+                                      child: Icon(
+                                        Icons.apps,
+                                        size: constraints.maxHeight - 8,
+                                        color: widget.color,
+                                      ),
+                                    ),
                               AnimatedPositioned(
                                 duration: Duration(milliseconds: 150),
                                 curve: Curves.ease,

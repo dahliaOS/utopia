@@ -45,7 +45,7 @@ class _MyHomePageState extends State<MyHomePage> {
         ),
         alwaysOnTopWindows: [
           Taskbar(
-            alignment: TaskbarAlignment.LEFT,
+            alignment: TaskbarAlignment.CENTER,
             backgroundColor: Colors.white.withOpacity(0.7),
             itemColor: Colors.grey[900]!,
             leading: InkWell(
@@ -59,9 +59,6 @@ class _MyHomePageState extends State<MyHomePage> {
               onTap: () {
                 key.currentState!.pushWindowEntry(
                   WindowEntry.withDefaultToolbar(
-                    icon: NetworkImage(
-                      "https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcR1HDcyXu9SHC4glO2kFKjVhcy9kU6Q1S9T2g&usqp=CAU",
-                    ),
                     title: "Example",
                     toolbarColor: Colors.white,
                     content: ExampleApp(),

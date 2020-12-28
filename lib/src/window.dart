@@ -139,22 +139,8 @@ class _WindowState extends State<Window> {
     final hierarchy = context.read<WindowHierarchyState>();
     final wmRect = hierarchy.wmRect;
 
-    Rect _fromLTWH(
-      double left,
-      double top,
-      double right,
-      double bottom,
-    ) {
-      return Rect.fromLTWH(
-        left,
-        top,
-        right,
-        bottom,
-      );
-    }
-
     if (entry.maximized || mobileWindow) {
-      return _fromLTWH(
+      return Rect.fromLTWH(
         0,
         0,
         wmRect.width,
@@ -164,56 +150,56 @@ class _WindowState extends State<Window> {
 
     switch (entry.windowDock) {
       case WindowDock.TOP_LEFT:
-        return _fromLTWH(
+        return Rect.fromLTWH(
           0,
           0,
           wmRect.width / 2,
           wmRect.height / 2,
         );
       case WindowDock.TOP:
-        return _fromLTWH(
+        return Rect.fromLTWH(
           0,
           0,
           wmRect.width,
           wmRect.height / 2,
         );
       case WindowDock.TOP_RIGHT:
-        return _fromLTWH(
+        return Rect.fromLTWH(
           wmRect.width / 2,
           0,
           wmRect.width / 2,
           wmRect.height / 2,
         );
       case WindowDock.LEFT:
-        return _fromLTWH(
+        return Rect.fromLTWH(
           0,
           0,
           wmRect.width / 2,
           wmRect.height,
         );
       case WindowDock.RIGHT:
-        return _fromLTWH(
+        return Rect.fromLTWH(
           wmRect.width / 2,
           0,
           wmRect.width / 2,
           wmRect.height,
         );
       case WindowDock.BOTTOM_LEFT:
-        return _fromLTWH(
+        return Rect.fromLTWH(
           0,
           wmRect.height / 2,
           wmRect.width / 2,
           wmRect.height / 2,
         );
       case WindowDock.BOTTOM:
-        return _fromLTWH(
+        return Rect.fromLTWH(
           0,
           wmRect.height / 2,
           wmRect.width,
           wmRect.height / 2,
         );
       case WindowDock.BOTTOM_RIGHT:
-        return _fromLTWH(
+        return Rect.fromLTWH(
           wmRect.width / 2,
           wmRect.height / 2,
           wmRect.width / 2,
