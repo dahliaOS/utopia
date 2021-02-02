@@ -100,6 +100,11 @@ class _DefaultWindowToolbarState extends State<DefaultWindowToolbar> {
                   right: 32.0 * 3,
                   bottom: 0,
                   child: GestureDetector(
+                    onTertiaryTapUp: (details) {
+                      setState(() {
+                        onClose();
+                      });
+                    },
                     onTap: onTap,
                     onDoubleTap: onDoubleTap,
                     onPanUpdate: onDrag,
