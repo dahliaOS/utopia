@@ -108,28 +108,25 @@ class WindowHierarchyState extends State<WindowHierarchy> {
       builder: (context, _) {
         return Stack(
           children: [
-            GestureDetector(
-              onTap: _dismissOverlay,
-              behavior: HitTestBehavior.deferToChild,
-              child: widget.rootWindow ?? Container(),
-            ),
-            GestureDetector(
-              onTap: _dismissOverlay,
-              behavior: HitTestBehavior.deferToChild,
-              child: Container(
-                margin: widget.margin,
-                child: Stack(
-                  clipBehavior: Clip.none,
-                  children: entriesByFocus
-                      .map(
-                        (e) => Window(
-                          entry: e,
-                          key: _windowKeys[e.id],
-                        ),
-                      )
-                      .toList(),
-                ),
+            widget.rootWindow ?? Container(),
+            Padding(
+              padding: widget.margin,
+              child: Stack(
+                clipBehavior: Clip.none,
+                children: entriesByFocus
+                    .map(
+                      (e) => Window(
+                        entry: e,
+                        key: _windowKeys[e.id],
+                      ),
+                    )
+                    .toList(),
               ),
+            ),
+            Stack(
+              clipBehavior: Clip.none,
+              fit: StackFit.passthrough,
+              children: alwaysOnTopWindows,
             ),
             ..._overlayEntries
                 .map(
@@ -139,28 +136,10 @@ class WindowHierarchyState extends State<WindowHierarchy> {
                   ),
                 )
                 .toList(),
-            GestureDetector(
-              onTap: _dismissOverlay,
-              behavior: HitTestBehavior.deferToChild,
-              child: Stack(
-                clipBehavior: Clip.none,
-                fit: StackFit.passthrough,
-                children: alwaysOnTopWindows,
-              ),
-            ),
           ],
         );
       },
     );
-  }
-
-  void _dismissOverlay() async {
-    if (_overlayEntries.isNotEmpty) {
-      final entry = _overlayEntries.last;
-      await entry.animationController.reverse();
-      popOverlayEntry(entry);
-      setState(() {});
-    }
   }
 
   List<WindowEntry> get entriesByFocus {

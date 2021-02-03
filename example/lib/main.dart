@@ -45,7 +45,7 @@ class _MyHomePageState extends State<MyHomePage> {
         ),
         alwaysOnTopWindows: [
           Taskbar(
-            alignment: TaskbarAlignment.LEFT,
+            alignment: TaskbarAlignment.CENTER,
             backgroundColor: Colors.white.withOpacity(0.7),
             itemColor: Colors.grey[900]!,
             leading: InkWell(
@@ -59,9 +59,6 @@ class _MyHomePageState extends State<MyHomePage> {
               onTap: () {
                 key.currentState!.pushWindowEntry(
                   WindowEntry.withDefaultToolbar(
-                    icon: NetworkImage(
-                      "https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcR1HDcyXu9SHC4glO2kFKjVhcy9kU6Q1S9T2g&usqp=CAU",
-                    ),
                     title: "Example",
                     toolbarColor: Colors.white,
                     content: ExampleApp(),
@@ -89,11 +86,21 @@ class _MyHomePageState extends State<MyHomePage> {
                           animation: _ac,
                           builder: (context, _) {
                             return Positioned(
-                              bottom: key.currentState!.insets.bottom + 4,
-                              right: 4,
-                              width: _ac.value * 360,
-                              height: _ac.value * 600,
-                              child: Card(),
+                              top: 0,
+                              bottom: key.currentState!.insets.bottom,
+                              right: 0,
+                              child: SlideTransition(
+                                position: Tween<Offset>(
+                                  begin: Offset(1, 0),
+                                  end: Offset.zero,
+                                ).animate(_ac),
+                                child: SizedBox(
+                                  width: 400,
+                                  child: Material(
+                                    elevation: 24,
+                                  ),
+                                ),
+                              ),
                             );
                           },
                         );

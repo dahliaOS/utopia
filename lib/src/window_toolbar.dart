@@ -16,12 +16,12 @@ class _DefaultWindowToolbarState extends State<DefaultWindowToolbar> {
   Widget build(BuildContext context) {
     final entry = context.watch<WindowEntry>();
     final fgColor = entry.toolbarColor.computeLuminance() > 0.5
-        ? Colors.grey[900]
+        ? Colors.grey[900]!
         : Colors.white;
 
     return GestureDetector(
       child: SizedBox(
-        height: 35,
+        height: 36,
         child: Material(
           color: entry.toolbarColor,
           child: IconTheme.merge(
@@ -42,7 +42,11 @@ class _DefaultWindowToolbarState extends State<DefaultWindowToolbar> {
                               width: 20,
                               height: 20,
                             )
-                          : Container(),
+                          : Icon(
+                              Icons.apps,
+                              size: 20,
+                              color: fgColor,
+                            ),
                       SizedBox(width: 8),
                       Spacer(),
                       WindowToolbarButton(
@@ -190,6 +194,22 @@ class _DefaultWindowToolbarState extends State<DefaultWindowToolbar> {
       return;
     }
 
+    if (topEdge && _lastDetails.globalPosition.dx <= rect.left + 2 ||
+        _lastDetails.globalPosition.dy <= rect.top + 50 && leftEdge) {
+      entry.windowDock = WindowDock.TOP_LEFT;
+      return;
+    }
+
+    if (leftEdge && _lastDetails.globalPosition.dy >= rect.bottom - 50) {
+      entry.windowDock = WindowDock.BOTTOM_LEFT;
+      return;
+    }
+
+    if (rightEdge && _lastDetails.globalPosition.dy >= rect.bottom - 50) {
+      entry.windowDock = WindowDock.BOTTOM_RIGHT;
+      return;
+    }
+
     if (topEdge) {
       entry.maximized = true;
       return;
@@ -234,14 +254,19 @@ class WindowToolbarButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return SizedBox.fromSize(
       size: Size.square(32),
-      child: Material(
-        clipBehavior: Clip.antiAlias,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(32)),
-        color: Colors.transparent,
-        child: InkWell(
-          hoverColor: hoverColor,
-          onTap: onTap,
-          child: icon,
+      child: Center(
+        child: SizedBox.fromSize(
+          size: Size.square(28),
+          child: Material(
+            color: Colors.transparent,
+            child: InkWell(
+              customBorder: CircleBorder(),
+              hoverColor: hoverColor,
+              splashColor: hoverColor,
+              onTap: onTap,
+              child: icon,
+            ),
+          ),
         ),
       ),
     );

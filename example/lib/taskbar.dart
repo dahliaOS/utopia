@@ -28,14 +28,15 @@ class Taskbar extends StatefulWidget {
 class _TaskbarState extends State<Taskbar> with SingleTickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
+    final windows = Provider.of<WindowHierarchyState>(context).windows;
+
     final appIcons = Align(
       alignment: taskbarAlignment,
       child: SingleChildScrollView(
         reverse: widget.alignment == TaskbarAlignment.RIGHT,
         scrollDirection: Axis.horizontal,
         child: Row(
-          children: Provider.of<WindowHierarchyState>(context)
-              .windows
+          children: windows
               .map<Widget>(
                 (e) => TaskbarItem(
                   entry: e,
@@ -67,6 +68,15 @@ class _TaskbarState extends State<Taskbar> with SingleTickerProviderStateMixin {
             color: widget.backgroundColor,
             child: Stack(
               children: [
+                Positioned(
+                  left: 0,
+                  right: 0,
+                  bottom: 0,
+                  height: 48,
+                  child: widget.alignment == TaskbarAlignment.CENTER
+                      ? appIcons
+                      : Container(),
+                ),
                 Row(
                   children: [
                     widget.leading ?? Container(),
@@ -77,15 +87,6 @@ class _TaskbarState extends State<Taskbar> with SingleTickerProviderStateMixin {
                     ),
                     widget.trailing ?? Container(),
                   ],
-                ),
-                Positioned(
-                  left: 0,
-                  right: 0,
-                  bottom: 0,
-                  height: 48,
-                  child: widget.alignment == TaskbarAlignment.CENTER
-                      ? appIcons
-                      : Container(),
                 ),
               ],
             ),

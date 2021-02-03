@@ -10,7 +10,7 @@ class DismissibleOverlayEntry extends ChangeNotifier {
   final Curve curve;
   final Curve reverseCurve;
   late AnimationController animationController;
-  late Animation animation;
+  late Animation<double> animation;
   bool _enableDismiss;
 
   bool get enableDismiss => _enableDismiss;

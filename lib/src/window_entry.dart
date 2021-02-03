@@ -113,7 +113,7 @@ class WindowEntry extends ChangeNotifier {
     Color toolbarColor = const Color(0xFF212121),
     this.initialSize = const Size(600, 480),
     this.initiallyCenter = true,
-    this.minSize = const Size(300, 200),
+    this.minSize = const Size(360, 240),
     ShapeBorder? shape,
     this.bgColor = Colors.transparent,
     this.elevation = 4,
