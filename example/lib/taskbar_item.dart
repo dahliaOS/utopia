@@ -49,8 +49,8 @@ class _TaskbarItemState extends State<TaskbarItem>
 
   @override
   void dispose() {
-    super.dispose();
     _ac.dispose();
+    super.dispose();
   }
 
   @override

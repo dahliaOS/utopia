@@ -86,11 +86,21 @@ class _MyHomePageState extends State<MyHomePage> {
                           animation: _ac,
                           builder: (context, _) {
                             return Positioned(
-                              bottom: key.currentState!.insets.bottom + 4,
-                              right: 4,
-                              width: _ac.value * 360,
-                              height: _ac.value * 600,
-                              child: Card(),
+                              top: 0,
+                              bottom: key.currentState!.insets.bottom,
+                              right: 0,
+                              child: SlideTransition(
+                                position: Tween<Offset>(
+                                  begin: Offset(1, 0),
+                                  end: Offset.zero,
+                                ).animate(_ac),
+                                child: SizedBox(
+                                  width: 400,
+                                  child: Material(
+                                    elevation: 24,
+                                  ),
+                                ),
+                              ),
                             );
                           },
                         );

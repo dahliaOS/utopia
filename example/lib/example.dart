@@ -52,14 +52,14 @@ class _MyHomePageState extends State<MyHomePage> {
               '$_counter',
               style: Theme.of(context).textTheme.headline4,
             ),
-            FlatButton(
+            TextButton(
               child: Text("Toggle toolbar"),
               onPressed: () {
                 entry.usesToolbar = !entry.usesToolbar;
                 setState(() {});
               },
             ),
-            FlatButton(
+            TextButton(
               child: Text("Change toolbar color"),
               onPressed: () {
                 entry.toolbarColor = Colors
@@ -67,7 +67,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 setState(() {});
               },
             ),
-            FlatButton(
+            TextButton(
               child: Text("Spawn dialog"),
               onPressed: () {
                 showDialog(
