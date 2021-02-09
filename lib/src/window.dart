@@ -100,7 +100,12 @@ class _WindowState extends State<Window> {
                                       windowRect.height - entry.minSize.height,
                                     ),
                                   ),
-                                  child: ClipRect(
+                                  child: ClipRRect(
+                                    borderRadius: entry.maximized
+                                        ? BorderRadius.circular(0)
+                                        : BorderRadius.only(
+                                            bottomLeft: Radius.circular(8),
+                                            bottomRight: Radius.circular(8)),
                                     child: entry.content,
                                   ),
                                 ),
