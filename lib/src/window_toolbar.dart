@@ -11,6 +11,7 @@ class DefaultWindowToolbar extends StatefulWidget {
 }
 
 class _DefaultWindowToolbarState extends State<DefaultWindowToolbar> {
+  SystemMouseCursor _cursor = SystemMouseCursors.move;
   late DragUpdateDetails _lastDetails;
 
   @override
@@ -23,6 +24,7 @@ class _DefaultWindowToolbarState extends State<DefaultWindowToolbar> {
       child: SizedBox(
         height: 40,
         child: BoxContainer(
+          cursor: _cursor,
           customBorderRadius: entry.maximized
               ? BorderRadius.circular(0)
               : BorderRadius.only(
@@ -111,16 +113,19 @@ class _DefaultWindowToolbarState extends State<DefaultWindowToolbar> {
                     left: 0,
                     right: 32.0 * 3,
                     bottom: 0,
-                    child: GestureDetector(
-                      onTertiaryTapUp: (details) {
-                        setState(() {
-                          onClose();
-                        });
-                      },
-                      onTap: onTap,
-                      onDoubleTap: onDoubleTap,
-                      onPanUpdate: onDrag,
-                      onPanEnd: onDragEnd,
+                    child: MouseRegion(
+                      cursor: _cursor,
+                      child: GestureDetector(
+                        onTertiaryTapUp: (details) {
+                          setState(() {
+                            onClose();
+                          });
+                        },
+                        onTap: onTap,
+                        onDoubleTap: onDoubleTap,
+                        onPanUpdate: onDrag,
+                        onPanEnd: onDragEnd,
+                      ),
                     ),
                   ),
                 ],
@@ -139,6 +144,9 @@ class _DefaultWindowToolbarState extends State<DefaultWindowToolbar> {
   }
 
   void onDrag(details) {
+    setState(() {
+      _cursor = SystemMouseCursors.move;
+    });
     _lastDetails = details;
     final entry = context.read<WindowEntry>();
     final hierarchy = context.read<WindowHierarchyState>();
@@ -185,6 +193,9 @@ class _DefaultWindowToolbarState extends State<DefaultWindowToolbar> {
   }
 
   void onDragEnd(details) {
+    setState(() {
+      _cursor = SystemMouseCursors.click;
+    });
     final entry = context.read<WindowEntry>();
     final rect = context.read<WindowHierarchyState>().wmRect;
     final topEdge = _lastDetails.globalPosition.dy <= rect.top + 2;
