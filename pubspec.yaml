@@ -10,7 +10,7 @@ dependencies:
   flutter:
     sdk: flutter
   
-  provider: ^5.0.0-nullsafe.3
+  provider: ^5.0.0
   dahlia_backend:
     #path: ../dahlia_backend/
     git:
