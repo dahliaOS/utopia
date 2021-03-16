@@ -31,7 +31,7 @@ class _DefaultWindowToolbarState extends State<DefaultWindowToolbar> {
               : BorderRadius.only(
                   topLeft: Radius.circular(8), topRight: Radius.circular(8)),
           useBlur: true,
-          color: _data.darkMode ? Color(0xff212121) : Colors.white,
+          color: _data.darkMode ? Color(0xff0a0a0a) : Color(0xfff0f8ff),
           useSystemOpacity: true,
           child: Material(
             color: Colors.transparent,
