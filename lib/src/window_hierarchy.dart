@@ -152,6 +152,14 @@ class WindowHierarchyState extends State<WindowHierarchy> {
     return workList;
   }
 
+  bool overlayIsActive(String uinqueId) {
+    if (_overlayEntries.length != 0 &&
+        _overlayEntries.first.uniqueId == uinqueId) {
+      return true;
+    } else
+      return false;
+  }
+
   /*void _windowSwitcherListener(RawKeyEvent event) {
     if (event.isControlPressed) {
       if (event.logicalKey == LogicalKeyboardKey.tab) {
