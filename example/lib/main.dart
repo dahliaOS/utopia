@@ -1,5 +1,6 @@
 import 'dart:ui';
 
+import 'package:dahlia_backend/dahlia_backend.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:utopia_wm/wm.dart';
@@ -8,18 +9,24 @@ import 'example.dart';
 import 'taskbar.dart';
 import 'wallpaper_layer.dart';
 
-void main() {
+void main() async {
+  //you cannot run pangolin and the utopia example at the same time because if one is running, the db is locked
+  await DatabaseManager.initialseDatabase();
   runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      debugShowCheckedModeBanner: false,
-      color: Colors.black,
-      home: MyHomePage(),
+    //The demo needs to load the backend provider to get the settings
+    return ChangeNotifierProvider<PreferenceProvider>.value(
+      value: PreferenceProvider(),
+      builder: (context, child) => MaterialApp(
+        title: 'Flutter Demo',
+        debugShowCheckedModeBanner: false,
+        color: Colors.black,
+        home: MyHomePage(),
+      ),
     );
   }
 }
@@ -31,6 +38,14 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   final GlobalKey<WindowHierarchyState> key = GlobalKey<WindowHierarchyState>();
+
+  @override
+  void initState() {
+    //Its a setting in pangolin that is off by default but required to be enabled to make the toolbar in the demo app work
+    Provider.of<PreferenceProvider>(context, listen: false).useColoredTitlebar =
+        true;
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -60,8 +75,9 @@ class _MyHomePageState extends State<MyHomePage> {
                 key.currentState!.pushWindowEntry(
                   WindowEntry.withDefaultToolbar(
                     title: "Example",
-                    toolbarColor: Colors.white,
+                    toolbarColor: Colors.red,
                     content: ExampleApp(),
+                    packageName: '',
                   ),
                 );
               },
