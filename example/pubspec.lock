@@ -61,8 +61,8 @@ packages:
     dependency: transitive
     description:
       path: "."
-      ref: HEAD
-      resolved-ref: "0d59411c56d359230db8ebef8d6632fabe8a32a5"
+      ref: "feature/pinnedApps"
+      resolved-ref: "9eda4beefe7bb4ef86569bbbc6e36597283679f8"
       url: "https://github.com/dahliaOS/backend.git"
     source: git
     version: "0.0.1+1"
