@@ -56,13 +56,13 @@ packages:
       name: crypto
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "3.0.0"
+    version: "3.0.1"
   dahlia_backend:
     dependency: "direct main"
     description:
       path: "."
-      ref: HEAD
-      resolved-ref: "4b9654a72ebb27e7ecef68d79f59a710551cfae5"
+      ref: "feature/pinnedApps"
+      resolved-ref: "9eda4beefe7bb4ef86569bbbc6e36597283679f8"
       url: "https://github.com/dahliaOS/backend.git"
     source: git
     version: "0.0.1+1"
@@ -103,7 +103,7 @@ packages:
       name: hive
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.0.0"
+    version: "2.0.2"
   intl:
     dependency: transitive
     description:
@@ -194,7 +194,7 @@ packages:
       name: process
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "4.2.0"
+    version: "4.2.1"
   provider:
     dependency: "direct main"
     description:
@@ -269,7 +269,7 @@ packages:
       name: win32
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.0.4"
+    version: "2.0.5"
   xdg_directories:
     dependency: transitive
     description:

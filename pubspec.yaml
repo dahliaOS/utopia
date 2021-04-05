@@ -15,6 +15,7 @@ dependencies:
     #path: ../dahlia_backend/
     git:
       url: https://github.com/dahliaOS/backend.git
+      ref: feature/pinnedApps
 
 dev_dependencies:
   flutter_test:

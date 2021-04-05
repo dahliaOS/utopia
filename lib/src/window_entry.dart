@@ -13,6 +13,7 @@ class WindowEntry extends ChangeNotifier {
   final Widget content;
   bool _usesToolbar;
   Color _toolbarColor;
+  final String packageName;
   final Size initialSize;
   final bool initiallyCenter;
   final Size minSize;
@@ -85,6 +86,7 @@ class WindowEntry extends ChangeNotifier {
   }
 
   WindowEntry({
+    required this.packageName,
     String? title,
     ImageProvider? icon,
     required this.content,
@@ -107,6 +109,7 @@ class WindowEntry extends ChangeNotifier {
         _shape = shape;
 
   WindowEntry.withDefaultToolbar({
+    required this.packageName,
     String? title,
     ImageProvider? icon,
     required this.content,
