@@ -61,8 +61,8 @@ packages:
     dependency: transitive
     description:
       path: "."
-      ref: "feature/pinnedApps"
-      resolved-ref: "9eda4beefe7bb4ef86569bbbc6e36597283679f8"
+      ref: main
+      resolved-ref: "5f6a9fa91c1412a41dd46977bab76e8419161c19"
       url: "https://github.com/dahliaOS/backend.git"
     source: git
     version: "0.0.1+1"
@@ -248,7 +248,7 @@ packages:
       name: test_api
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.2.19"
+    version: "0.3.0"
   typed_data:
     dependency: transitive
     description:
