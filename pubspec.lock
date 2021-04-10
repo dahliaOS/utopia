@@ -60,11 +60,9 @@ packages:
   dahlia_backend:
     dependency: "direct main"
     description:
-      path: "."
-      ref: main
-      resolved-ref: "5f6a9fa91c1412a41dd46977bab76e8419161c19"
-      url: "https://github.com/dahliaOS/backend.git"
-    source: git
+      path: "../backend"
+      relative: true
+    source: path
     version: "0.0.1+1"
   fake_async:
     dependency: transitive
