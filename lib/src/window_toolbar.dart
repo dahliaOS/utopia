@@ -26,10 +26,12 @@ class _DefaultWindowToolbarState extends State<DefaultWindowToolbar> {
         height: 40,
         child: BoxContainer(
           cursor: _cursor,
-          customBorderRadius: entry.maximized
-              ? BorderRadius.circular(0)
-              : BorderRadius.only(
-                  topLeft: Radius.circular(8), topRight: Radius.circular(8)),
+          customBorderRadius:
+              entry.maximized || entry.windowDock != WindowDock.NORMAL
+                  ? BorderRadius.circular(0)
+                  : BorderRadius.only(
+                      topLeft: Radius.circular(8),
+                      topRight: Radius.circular(8)),
           useBlur: true,
           color: _data.useColoredTitlebar
               ? entry.toolbarColor

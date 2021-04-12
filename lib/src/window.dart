@@ -101,7 +101,9 @@ class _WindowState extends State<Window> {
                                     ),
                                   ),
                                   child: ClipRRect(
-                                    borderRadius: entry.maximized
+                                    borderRadius: entry.maximized ||
+                                            entry.windowDock !=
+                                                WindowDock.NORMAL
                                         ? BorderRadius.circular(0)
                                         : BorderRadius.only(
                                             bottomLeft: Radius.circular(8),
