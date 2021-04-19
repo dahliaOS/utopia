@@ -79,41 +79,39 @@ class _WindowState extends State<Window> {
                     clipBehavior: Clip.antiAlias,
                     elevation: entry.maximized ? 0 : entry.elevation,
                     color: entry.bgColor,
-                    child: SingleChildScrollView(
-                      physics: NeverScrollableScrollPhysics(),
-                      child: SizedBox(
-                        height:
-                            max(entry.minSize.height, windowRect.size.height),
-                        child: Column(
-                          children: [
-                            Visibility(
-                              visible: entry.usesToolbar && !mobileWindow,
-                              child: entry.toolbar ?? Container(),
-                            ),
-                            Expanded(
-                              child: RepaintBoundary(
-                                key: entry.repaintBoundaryKey,
-                                child: MediaQuery(
-                                  data: MediaQueryData(
-                                    size: Size(
-                                      windowRect.width,
-                                      windowRect.height - entry.minSize.height,
+                    child: ClipRRect(
+                      borderRadius: entry.maximized ||
+                              entry.windowDock != WindowDock.NORMAL
+                          ? BorderRadius.circular(0)
+                          : BorderRadius.circular(8),
+                      child: SingleChildScrollView(
+                        physics: NeverScrollableScrollPhysics(),
+                        child: SizedBox(
+                          height:
+                              max(entry.minSize.height, windowRect.size.height),
+                          child: Column(
+                            children: [
+                              Visibility(
+                                visible: entry.usesToolbar && !mobileWindow,
+                                child: entry.toolbar ?? Container(),
+                              ),
+                              Expanded(
+                                child: RepaintBoundary(
+                                  key: entry.repaintBoundaryKey,
+                                  child: MediaQuery(
+                                    data: MediaQueryData(
+                                      size: Size(
+                                        windowRect.width,
+                                        windowRect.height -
+                                            entry.minSize.height,
+                                      ),
                                     ),
-                                  ),
-                                  child: ClipRRect(
-                                    borderRadius: entry.maximized ||
-                                            entry.windowDock !=
-                                                WindowDock.NORMAL
-                                        ? BorderRadius.circular(0)
-                                        : BorderRadius.only(
-                                            bottomLeft: Radius.circular(8),
-                                            bottomRight: Radius.circular(8)),
                                     child: entry.content,
                                   ),
                                 ),
                               ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
                       ),
                     ),
