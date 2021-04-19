@@ -1,4 +1,3 @@
-import 'package:dahlia_backend/dahlia_backend.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
@@ -18,123 +17,110 @@ class _DefaultWindowToolbarState extends State<DefaultWindowToolbar> {
   @override
   Widget build(BuildContext context) {
     final entry = context.watch<WindowEntry>();
-    final _data = context.watch<PreferenceProvider>();
-    final fgColor = !_data.darkMode ? Colors.grey[900]! : Colors.white;
+    final fgColor = entry.toolbarColor.computeLuminance() > 0.5
+        ? Colors.grey[900]!
+        : Colors.white;
 
     return GestureDetector(
       child: SizedBox(
         height: 40,
-        child: BoxContainer(
-          cursor: _cursor,
-          customBorderRadius:
-              entry.maximized || entry.windowDock != WindowDock.NORMAL
-                  ? BorderRadius.circular(0)
-                  : BorderRadius.only(
-                      topLeft: Radius.circular(8),
-                      topRight: Radius.circular(8)),
-          useBlur: true,
-          color: _data.useColoredTitlebar
-              ? entry.toolbarColor
-              : (_data.darkMode ? Color(0xff0a0a0a) : Color(0xfff0f8ff)),
-          useSystemOpacity: true,
-          child: Material(
-            color: Colors.transparent,
-            child: IconTheme.merge(
-              data: IconThemeData(
-                color: fgColor,
-                size: 20,
-              ),
-              child: Stack(
-                children: [
-                  Align(
-                    alignment: Alignment.center,
-                    child: Row(
-                      children: [
-                        SizedBox(width: 8),
-                        entry.icon != null
-                            ? Image(
-                                image: entry.icon!,
-                                width: 20,
-                                height: 20,
-                              )
-                            : Icon(
-                                Icons.apps,
-                                size: 20,
-                                color: fgColor,
-                              ),
-                        SizedBox(width: 8),
-                        Spacer(),
-                        WindowToolbarButton(
-                          icon: Icon(Icons.minimize),
-                          onTap: () {
-                            final hierarchy =
-                                context.read<WindowHierarchyState>();
-                            final windows = hierarchy.entriesByFocus;
+        child: Material(
+          color: entry.bgColor,
+          child: IconTheme.merge(
+            data: IconThemeData(
+              color: fgColor,
+              size: 20,
+            ),
+            child: Stack(
+              children: [
+                Align(
+                  alignment: Alignment.center,
+                  child: Row(
+                    children: [
+                      SizedBox(width: 8),
+                      entry.icon != null
+                          ? Image(
+                              image: entry.icon!,
+                              width: 20,
+                              height: 20,
+                            )
+                          : Icon(
+                              Icons.apps,
+                              size: 20,
+                              color: fgColor,
+                            ),
+                      SizedBox(width: 8),
+                      Spacer(),
+                      WindowToolbarButton(
+                        icon: Icon(Icons.minimize),
+                        onTap: () {
+                          final hierarchy =
+                              context.read<WindowHierarchyState>();
+                          final windows = hierarchy.entriesByFocus;
 
-                            entry.minimized = true;
-                            if (windows.length > 1) {
-                              hierarchy.requestWindowFocus(
-                                  windows[windows.length - 2]);
-                            }
-                          },
-                          hoverColor: Colors.black.withOpacity(0.2),
-                        ),
-                        WindowToolbarButton(
-                          icon: entry.maximized
-                              ? Icon(_ToolbarIcons.minimize)
-                              : Icon(_ToolbarIcons.maximize),
-                          onTap: () {
-                            context
-                                .read<WindowHierarchyState>()
-                                .requestWindowFocus(entry);
-                            entry.toggleMaximize();
-                            if (!entry.maximized) {
-                              entry.windowDock = WindowDock.NORMAL;
-                            }
-                          },
-                          hoverColor: Colors.black.withOpacity(0.2),
-                        ),
-                        WindowToolbarButton(
-                          icon: Icon(Icons.close),
-                          onTap: onClose,
-                          hoverColor: Colors.black.withOpacity(0.2),
-                        ),
-                        SizedBox(width: 2),
-                      ],
-                    ),
-                  ),
-                  Align(
-                    alignment: Alignment.center,
-                    child: Text(
-                      entry.title ?? "",
-                      style: TextStyle(
-                        color: fgColor,
-                      ),
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  ),
-                  Positioned(
-                    top: 0,
-                    left: 0,
-                    right: 32.0 * 3,
-                    bottom: 0,
-                    child: MouseRegion(
-                      cursor: _cursor,
-                      child: GestureDetector(
-                        onTertiaryTapUp: (details) {
-                          setState(() {
-                            onClose();
-                          });
+                          entry.minimized = true;
+                          if (windows.length > 1) {
+                            hierarchy.requestWindowFocus(
+                                windows[windows.length - 2]);
+                          }
                         },
-                        onTap: onTap,
-                        onDoubleTap: onDoubleTap,
-                        onPanUpdate: onDrag,
-                        onPanEnd: onDragEnd,
+                        hoverColor: Colors.black.withOpacity(0.2),
                       ),
+                      WindowToolbarButton(
+                        icon: entry.maximized
+                            ? Icon(_ToolbarIcons.minimize)
+                            : Icon(_ToolbarIcons.maximize),
+                        onTap: () {
+                          context
+                              .read<WindowHierarchyState>()
+                              .requestWindowFocus(entry);
+                          entry.toggleMaximize();
+                          if (!entry.maximized) {
+                            entry.windowDock = WindowDock.NORMAL;
+                          }
+                        },
+                        hoverColor: Colors.black.withOpacity(0.2),
+                      ),
+                      WindowToolbarButton(
+                        icon: Icon(Icons.close),
+                        onTap: onClose,
+                        hoverColor: Colors.black.withOpacity(0.2),
+                      ),
+                      SizedBox(width: 2),
+                    ],
+                  ),
+                ),
+                Align(
+                  alignment: Alignment.center,
+                  child: Text(
+                    entry.title ?? "",
+                    style: TextStyle(
+                      color: fgColor,
+                    ),
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+                Positioned(
+                  top: 0,
+                  left: 0,
+                  right: 32.0 * 3,
+                  bottom: 0,
+                  child: MouseRegion(
+                    cursor: _cursor,
+                    child: GestureDetector(
+                      onTertiaryTapUp: (details) {
+                        setState(() {
+                          onClose();
+                        });
+                      },
+                      onTap: onTap,
+                      onDoubleTap: onDoubleTap,
+                      onPanUpdate: onDrag,
+                      onPanEnd: onDragEnd,
                     ),
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
           ),
         ),
