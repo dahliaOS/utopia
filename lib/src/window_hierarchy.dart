@@ -89,6 +89,7 @@ class WindowHierarchyState extends State<WindowHierarchy> {
   }
 
   List<WindowEntry> get windows => _windowEntries;
+  List<DismissibleOverlayEntry> get overlays => _overlayEntries;
 
   @override
   Widget build(BuildContext context) {
