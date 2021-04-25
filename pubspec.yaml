@@ -11,11 +11,6 @@ dependencies:
     sdk: flutter
   
   provider: ^5.0.0
-  dahlia_backend:
-    #path: ../dahlia_backend/
-    git:
-      url: https://github.com/dahliaOS/backend.git
-      ref: main
 
 dev_dependencies:
   flutter_test:
