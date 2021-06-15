@@ -1,25 +1,28 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:utopia_wm/wm.dart';
+import 'package:utopia_wm/wm_new.dart';
 
 class ExampleApp extends StatelessWidget {
+  const ExampleApp({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
         primarySwatch: Colors.blue,
+        fontFamily: 'monospace',
       ),
       debugShowCheckedModeBanner: false,
-      shortcuts: {},
-      home: MyHomePage(),
+      shortcuts: const {},
+      home: const MyHomePage(),
     );
   }
 }
 
 class MyHomePage extends StatefulWidget {
+  const MyHomePage({Key? key}) : super(key: key);
+
   @override
   _MyHomePageState createState() => _MyHomePageState();
 }
@@ -35,45 +38,43 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    final entry = context.watch<WindowEntry>();
+    final registry = context.watch<WindowPropertyRegistry>();
 
     return Scaffold(
       appBar: AppBar(
-        title: Text("Example"),
+        title: const Text("Example"),
       ),
       body: Center(
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: <Widget>[
-            Text(
-              MediaQuery.of(context).size.toString(),
-            ),
+            Text(MediaQuery.of(context).size.toString()),
+            Text(MediaQuery.of(context).padding.toString()),
             Text(
               '$_counter',
               style: Theme.of(context).textTheme.headline4,
             ),
             TextButton(
-              child: Text("Toggle toolbar"),
+              child: const Text("Toggle resize ability"),
               onPressed: () {
-                entry.usesToolbar = !entry.usesToolbar;
+                registry.resize.allowResize = !registry.resize.allowResize;
                 setState(() {});
               },
             ),
             TextButton(
-              child: Text("Change toolbar color"),
+              child: const Text("Toggle always on top"),
               onPressed: () {
-                entry.toolbarColor = Colors
-                    .primaries[Random().nextInt(Colors.primaries.length - 1)];
+                registry.info.alwaysOnTop = !registry.info.alwaysOnTop;
                 setState(() {});
               },
             ),
             TextButton(
-              child: Text("Spawn dialog"),
+              child: const Text("Spawn dialog"),
               onPressed: () {
                 showDialog(
                   context: context,
                   useRootNavigator: false,
-                  builder: (context) => AlertDialog(
+                  builder: (context) => const AlertDialog(
                     title: Text("Helo"),
                     content: Text("Yo"),
                   ),
@@ -86,7 +87,7 @@ class _MyHomePageState extends State<MyHomePage> {
       floatingActionButton: FloatingActionButton(
         onPressed: _incrementCounter,
         tooltip: 'Increment',
-        child: Icon(Icons.add),
+        child: const Icon(Icons.add),
       ),
     );
   }

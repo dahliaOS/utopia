@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
-import 'package:utopia_wm/src/window_entry.dart';
+import 'package:utopia_wm/old/src/window_entry.dart';
 import 'package:utopia_wm/wm.dart';
 
 class DefaultWindowToolbar extends StatefulWidget {
