@@ -41,15 +41,25 @@ class GeometryWindowProperties extends WindowPropertiesBase {
         size.width,
         size.height,
       );
+  bool get maximized => _registry.get(GeometryWindowFeature.maximized);
 
-  set size(Size value) => _registry.set(GeometryWindowFeature.size, value);
-  set position(Offset value) =>
-      _registry.set(GeometryWindowFeature.position, value);
+  set size(Size value) {
+    if (maximized) return;
+    _registry.set(GeometryWindowFeature.size, value);
+  }
+
+  set position(Offset value) {
+    if (maximized) return;
+    _registry.set(GeometryWindowFeature.position, value);
+  }
 
   set rect(Rect value) {
     position = Offset(value.left, value.top);
     size = value.size;
   }
+
+  set maximized(bool value) =>
+      _registry.set(GeometryWindowFeature.maximized, value);
 }
 
 class SurfaceWindowProperties extends WindowPropertiesBase {

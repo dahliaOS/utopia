@@ -18,26 +18,12 @@ class ResizeWindowFeature extends WindowFeature {
     final WindowPropertyRegistry properties =
         WindowPropertyRegistry.of(context);
 
-    if (!properties.resize.allowResize) {
-      return content;
-    }
-
     return WindowResizeGestureDetector(
       child: content,
       borderThickness: 8,
-      listeners: getListeners(context),
-      onPanEnd: (details) {
-        properties.geometry.size = Size(
-          properties.geometry.size.width.clamp(
-            properties.resize.minSize.width,
-            properties.resize.maxSize.width,
-          ),
-          properties.geometry.size.height.clamp(
-            properties.resize.minSize.height,
-            properties.resize.maxSize.height,
-          ),
-        );
-      },
+      listeners: properties.resize.allowResize && !properties.geometry.maximized
+          ? getListeners(context)
+          : null,
     );
   }
 
@@ -148,15 +134,13 @@ class ResizeWindowFeature extends WindowFeature {
 
 class WindowResizeGestureDetector extends StatelessWidget {
   final double borderThickness;
-  final Map<Alignment, GestureDragUpdateCallback> listeners;
-  final GestureDragEndCallback? onPanEnd;
+  final Map<Alignment, GestureDragUpdateCallback>? listeners;
   final Widget child;
 
   const WindowResizeGestureDetector({
-    required this.listeners,
     required this.child,
     required this.borderThickness,
-    this.onPanEnd,
+    this.listeners,
   });
 
   @override
@@ -165,7 +149,7 @@ class WindowResizeGestureDetector extends StatelessWidget {
       clipBehavior: Clip.none,
       children: [
         Positioned.fill(child: child),
-        Positioned.fill(child: buildFrame(context)),
+        if (listeners != null) Positioned.fill(child: buildFrame(context)),
       ],
     );
   }
@@ -178,21 +162,21 @@ class WindowResizeGestureDetector extends StatelessWidget {
             buildGestureDetector(
               borderThickness,
               borderThickness,
-              listeners[Alignment.topLeft],
+              listeners![Alignment.topLeft],
               SystemMouseCursors.resizeUpLeft,
             ),
             Expanded(
               child: buildGestureDetector(
                 null,
                 borderThickness,
-                listeners[Alignment.topCenter],
+                listeners![Alignment.topCenter],
                 SystemMouseCursors.resizeUp,
               ),
             ),
             buildGestureDetector(
               borderThickness,
               borderThickness,
-              listeners[Alignment.topRight],
+              listeners![Alignment.topRight],
               SystemMouseCursors.resizeUpRight,
             ),
           ],
@@ -203,14 +187,14 @@ class WindowResizeGestureDetector extends StatelessWidget {
               buildGestureDetector(
                 borderThickness,
                 null,
-                listeners[Alignment.centerLeft],
+                listeners![Alignment.centerLeft],
                 SystemMouseCursors.resizeLeft,
               ),
               Spacer(),
               buildGestureDetector(
                 borderThickness,
                 null,
-                listeners[Alignment.centerRight],
+                listeners![Alignment.centerRight],
                 SystemMouseCursors.resizeRight,
               ),
             ],
@@ -221,21 +205,21 @@ class WindowResizeGestureDetector extends StatelessWidget {
             buildGestureDetector(
               borderThickness,
               borderThickness,
-              listeners[Alignment.bottomLeft],
+              listeners![Alignment.bottomLeft],
               SystemMouseCursors.resizeDownLeft,
             ),
             Expanded(
               child: buildGestureDetector(
                 null,
                 borderThickness,
-                listeners[Alignment.bottomCenter],
+                listeners![Alignment.bottomCenter],
                 SystemMouseCursors.resizeDown,
               ),
             ),
             buildGestureDetector(
               borderThickness,
               borderThickness,
-              listeners[Alignment.bottomRight],
+              listeners![Alignment.bottomRight],
               SystemMouseCursors.resizeDownRight,
             ),
           ],
@@ -257,7 +241,6 @@ class WindowResizeGestureDetector extends StatelessWidget {
         height: height,
         child: GestureDetector(
           onPanUpdate: onPanUpdate,
-          onPanEnd: onPanEnd,
         ),
       ),
     );

@@ -1,4 +1,5 @@
 import 'package:flutter/widgets.dart';
+import 'package:utopia_wm/src/hierarchy.dart';
 import 'package:utopia_wm/src/registry.dart';
 
 import 'base.dart';
@@ -8,6 +9,8 @@ class GeometryWindowFeature extends WindowFeature {
       WindowPropertyKey<Size>('feature.geometry.size', Size.zero);
   static const WindowPropertyKey<Offset> position =
       WindowPropertyKey<Offset>('feature.geometry.position', Offset.zero);
+  static const WindowPropertyKey<bool> maximized =
+      WindowPropertyKey<bool>('feature.geometry.maximized', false);
 
   const GeometryWindowFeature();
 
@@ -15,11 +18,20 @@ class GeometryWindowFeature extends WindowFeature {
   Widget build(BuildContext context, Widget content) {
     final WindowPropertyRegistry properties =
         WindowPropertyRegistry.of(context);
+    final WindowHierarchyController hierarchy = WindowHierarchy.of(context);
 
     return CustomSingleChildLayout(
-      delegate: WindowGeometryDelegate(properties.geometry.rect),
+      delegate: WindowGeometryDelegate(
+        !properties.geometry.maximized
+            ? properties.geometry.rect
+            : hierarchy.wmBounds,
+      ),
       child: MediaQuery(
-        data: MediaQueryData(size: properties.geometry.size),
+        data: MediaQueryData(
+          size: !properties.geometry.maximized
+              ? properties.geometry.size
+              : hierarchy.wmBounds.size,
+        ),
         child: content,
       ),
     );

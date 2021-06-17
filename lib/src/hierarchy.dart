@@ -33,6 +33,9 @@ class _WindowHierarchyState extends State<WindowHierarchy> {
     setState(() {});
   }
 
+  Rect get _wmBounds => widget.controller.wmInsets
+      .deflateRect(Offset.zero & MediaQuery.of(context).size);
+
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider.value(
@@ -53,14 +56,15 @@ class WindowHierarchyController with ChangeNotifier {
   bool _initialized = false;
   final List<LiveWindowEntry> _entries = [];
   final List<String> _focusHierarchy = [];
+  EdgeInsets _wmInsets = EdgeInsets.zero;
+
+  WindowHierarchyController();
 
   List<LiveWindowEntry> get entries => _entries
       .where(
         (e) => e.registry.info.showOnTaskbar,
       )
       .toList();
-
-  WindowHierarchyController();
 
   void _provideState(_WindowHierarchyState state) {
     _state = state;
@@ -93,6 +97,14 @@ class WindowHierarchyController with ChangeNotifier {
     notifyListeners();
     _state._requestRebuild();
   }
+
+  EdgeInsets get wmInsets => _wmInsets;
+  set wmInsets(EdgeInsets value) {
+    _wmInsets = value;
+    notifyListeners();
+  }
+
+  Rect get wmBounds => _state._wmBounds;
 
   List<LiveWindowEntry> get entriesByFocus {
     final List<LiveWindowEntry> alwaysOnTopWindowEntries = _entries

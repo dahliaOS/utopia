@@ -60,19 +60,6 @@ class DefaultToolbar extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.center,
                       mainAxisSize: MainAxisSize.max,
                       children: [
-                        /* SizedBox(width: 4),
-                        properties.icon != null
-                            ? Image(
-                                image: properties.icon!,
-                                width: 16,
-                                height: 16,
-                                color: Colors.white,
-                              )
-                            : Icon(
-                                Icons.settings,
-                                size: 16,
-                                color: Colors.white,
-                              ), */
                         SizedBox(width: 4),
                         Expanded(
                           child: Text(
@@ -81,7 +68,6 @@ class DefaultToolbar extends StatelessWidget {
                               fontSize: 14,
                               letterSpacing: 1,
                               color: Colors.white,
-                              fontFamily: 'Ubuntu Mono',
                             ),
                             overflow: TextOverflow.ellipsis,
                           ),
@@ -90,8 +76,22 @@ class DefaultToolbar extends StatelessWidget {
                     ),
                   ),
                   GestureDetector(
+                    onPanStart: (details) {
+                      if (properties.geometry.maximized) {
+                        properties.geometry.maximized = false;
+                        properties.geometry.position = details.globalPosition +
+                            Offset(
+                              -properties.geometry.size.width / 2,
+                              -properties.toolbar.size / 2,
+                            );
+                      }
+                    },
                     onPanUpdate: (details) {
                       properties.geometry.position += details.delta;
+                    },
+                    onDoubleTap: () {
+                      properties.geometry.maximized =
+                          !properties.geometry.maximized;
                     },
                   ),
                 ],
@@ -116,7 +116,9 @@ class DefaultToolbar extends StatelessWidget {
               ),
             ),
             InkWell(
-              onTap: () {},
+              onTap: () {
+                properties.geometry.maximized = !properties.geometry.maximized;
+              },
               child: SizedBox.fromSize(
                 size: Size.square(properties.toolbar.size),
                 child: Center(
