@@ -2,8 +2,9 @@ import 'dart:async';
 import 'dart:math';
 import 'dart:ui';
 
-import 'package:example/toolbar.dart';
+import 'package:example/shell.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:utopia_wm/wm_new.dart';
 
 void main() {
@@ -17,7 +18,23 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(fontFamily: 'monospace'),
+      theme: ThemeData(
+        fontFamily: 'Consolas',
+        colorScheme: const ColorScheme.dark(
+          primary: Colors.white,
+          secondary: Colors.white,
+          onSurface: Colors.white,
+        ),
+        iconTheme: const IconThemeData(color: Colors.white),
+        outlinedButtonTheme: OutlinedButtonThemeData(
+          style: OutlinedButton.styleFrom(
+            padding: const EdgeInsets.all(8),
+            minimumSize: const Size(0, 40),
+            onSurface: Colors.white,
+            side: const BorderSide(color: Colors.white),
+          ),
+        ),
+      ),
       home: const MyHomePage(),
     );
   }
@@ -84,7 +101,12 @@ class _MyHomePageState extends State<MyHomePage> {
         ),
       );
       controller.addWindowEntry(
-        toolbarEntry.newInstance(Toolbar(controller: controller)),
+        toolbarEntry.newInstance(
+          ChangeNotifierProvider.value(
+            value: controller,
+            child: const ShellDirector(),
+          ),
+        ),
       );
     });
   }

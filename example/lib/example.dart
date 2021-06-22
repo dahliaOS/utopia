@@ -10,8 +10,8 @@ class ExampleApp extends StatelessWidget {
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
-        primarySwatch: Colors.blue,
-        fontFamily: 'monospace',
+        colorScheme: const ColorScheme.dark(),
+        fontFamily: 'Consolas',
       ),
       debugShowCheckedModeBanner: false,
       shortcuts: const {},
@@ -43,6 +43,7 @@ class _MyHomePageState extends State<MyHomePage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text("Example"),
+        elevation: 0,
       ),
       body: Center(
         child: Column(

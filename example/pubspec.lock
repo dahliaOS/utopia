@@ -117,7 +117,7 @@ packages:
     source: hosted
     version: "1.8.0"
   provider:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: provider
       url: "https://pub.dartlang.org"
@@ -183,7 +183,7 @@ packages:
       path: ".."
       relative: true
     source: path
-    version: "1.0.0+1"
+    version: "2.0.0+2"
   uuid:
     dependency: transitive
     description:
