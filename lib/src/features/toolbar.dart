@@ -98,7 +98,9 @@ class DefaultToolbar extends StatelessWidget {
               ),
             ),
             InkWell(
-              onTap: () {},
+              onTap: () {
+                properties.minimize.minimized = true;
+              },
               child: SizedBox.fromSize(
                 size: Size.square(properties.toolbar.size),
                 child: Center(

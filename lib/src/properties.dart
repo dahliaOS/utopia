@@ -29,6 +29,16 @@ class InfoWindowProperties extends WindowPropertiesBase {
       _registry.set(WindowEntry.alwaysOnTopMode, value);
 }
 
+class MinimizeWindowProperties extends WindowPropertiesBase {
+  const MinimizeWindowProperties.mapFrom(WindowPropertyRegistry registry)
+      : super._new(registry);
+
+  bool get minimized => _registry.get(MinimizeWindowFeature.minimized);
+
+  set minimized(bool value) =>
+      _registry.set(MinimizeWindowFeature.minimized, value);
+}
+
 class GeometryWindowProperties extends WindowPropertiesBase {
   const GeometryWindowProperties.mapFrom(WindowPropertyRegistry registry)
       : super._new(registry);

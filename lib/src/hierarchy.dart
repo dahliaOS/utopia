@@ -144,13 +144,14 @@ class WindowHierarchyController with ChangeNotifier {
   }
 
   bool isFocused(String id) {
-    return normalEntries.last.registry.info.id == id;
+    return _focusHierarchy.last == id;
   }
 
   void _checkForInitialized() {
     if (!_initialized) {
       throw Exception(
-          "The controller is not bound to any hierarchy or it's not initializated yet");
+        "The controller is not bound to any hierarchy or it's not initializated yet",
+      );
     }
   }
 }

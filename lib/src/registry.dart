@@ -64,6 +64,9 @@ class WindowPropertyKey<T> {
 extension RegistryUtils on WindowPropertyRegistry {
   InfoWindowProperties get info => InfoWindowProperties.mapFrom(this);
 
+  MinimizeWindowProperties get minimize =>
+      MinimizeWindowProperties.mapFrom(this);
+
   GeometryWindowProperties get geometry =>
       GeometryWindowProperties.mapFrom(this);
 

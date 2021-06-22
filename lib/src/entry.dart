@@ -117,7 +117,9 @@ class _WindowWrapperState extends State<WindowWrapper> {
       for (WindowPropertyKey property in feature.requiredProperties) {
         bool contains = registry.hasProperty(property);
         if (!contains) {
-          throw Exception('rip');
+          throw Exception(
+            'The required property ${property.name} was not found for the feature ${feature.runtimeType}',
+          );
         }
       }
     }
