@@ -18,13 +18,15 @@ class SurfaceWindowFeature extends WindowFeature {
     final WindowPropertyRegistry properties =
         WindowPropertyRegistry.of(context);
 
+    final ShapeBorder shape = properties.geometry.maximized
+        ? const RoundedRectangleBorder()
+        : properties.surface.shape;
+
     return _ShadowOccluder(
-      shape: properties.geometry.maximized
-          ? const RoundedRectangleBorder()
-          : properties.surface.shape,
+      shape: shape,
       elevation: properties.surface.elevation,
       child: ClipPath(
-        clipper: ShapeBorderClipper(shape: properties.surface.shape),
+        clipper: ShapeBorderClipper(shape: shape),
         clipBehavior: Clip.antiAlias,
         child: Stack(
           fit: StackFit.passthrough,
