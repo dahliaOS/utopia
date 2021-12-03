@@ -90,7 +90,6 @@ class LiveWindowEntry {
   void dispose() {
     _view = null;
     _disposed = true;
-    print('LIVE WINDOW ENTRY ${registry.info.id} DISPOSED');
   }
 }
 
