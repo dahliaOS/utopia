@@ -98,7 +98,7 @@ class Launcher extends StatelessWidget {
         WindowHierarchy.of(
           context,
           listen: false,
-        ).addWindowEntry(entry.newInstance(const ExampleApp()));
+        ).addWindowEntry(entry.newInstance(content: const ExampleApp()));
 
         Provider.of<ShellDirectorState>(
           context,

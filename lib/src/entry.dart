@@ -26,10 +26,11 @@ class WindowEntry {
     required this.properties,
   });
 
-  LiveWindowEntry newInstance([
+  LiveWindowEntry newInstance({
     Widget? content,
+    LayoutInfo Function(LayoutInfo info)? overrideLayout,
     Map<WindowPropertyKey, Object?> overrideProperties = const {},
-  ]) {
+  }) {
     final Map<WindowPropertyKey, Object?> completedProperties =
         Map.of(properties)
           ..addAll(overrideProperties)
@@ -38,9 +39,11 @@ class WindowEntry {
         completedProperties.containsKey(title) &&
         completedProperties.containsKey(icon));
 
+    final LayoutInfo info = overrideLayout?.call(layoutInfo) ?? layoutInfo;
+
     return LiveWindowEntry._(
       content: content ?? const SizedBox(),
-      layoutState: layoutInfo.createStateInternal(),
+      layoutState: info.createStateInternal(),
       features: features,
       registry: WindowPropertyRegistry(initialData: completedProperties),
     );

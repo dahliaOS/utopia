@@ -44,11 +44,21 @@ abstract class LayoutInfo {
   const LayoutInfo({
     required this.size,
     required this.position,
-    this.alwaysOnTop = false,
-    this.alwaysOnTopMode = AlwaysOnTopMode.window,
-    this.dock = WindowDock.none,
-    this.minimized = false,
-    this.fullscreen = false,
+    required this.alwaysOnTop,
+    required this.alwaysOnTopMode,
+    required this.dock,
+    required this.minimized,
+    required this.fullscreen,
+  });
+
+  LayoutInfo copyWith({
+    Size? size,
+    Offset? position,
+    bool? alwaysOnTop,
+    AlwaysOnTopMode? alwaysOnTopMode,
+    WindowDock? dock,
+    bool? minimized,
+    bool? fullscreen,
   });
 
   LayoutState createStateInternal() {
@@ -134,8 +144,8 @@ abstract class LayoutState<T extends LayoutInfo> extends ChangeNotifier {
 
 class FreeformLayoutInfo extends LayoutInfo {
   const FreeformLayoutInfo({
-    required Size size,
-    required Offset position,
+    Size size = Size.zero,
+    Offset position = Offset.zero,
     bool alwaysOnTop = false,
     AlwaysOnTopMode alwaysOnTopMode = AlwaysOnTopMode.window,
     WindowDock dock = WindowDock.none,
@@ -153,6 +163,27 @@ class FreeformLayoutInfo extends LayoutInfo {
 
   @override
   FreeformLayoutState createState() => FreeformLayoutState();
+
+  @override
+  FreeformLayoutInfo copyWith({
+    Size? size,
+    Offset? position,
+    bool? alwaysOnTop,
+    AlwaysOnTopMode? alwaysOnTopMode,
+    WindowDock? dock,
+    bool? minimized,
+    bool? fullscreen,
+  }) {
+    return FreeformLayoutInfo(
+      size: size ?? this.size,
+      position: position ?? this.position,
+      alwaysOnTop: alwaysOnTop ?? this.alwaysOnTop,
+      alwaysOnTopMode: alwaysOnTopMode ?? this.alwaysOnTopMode,
+      dock: dock ?? this.dock,
+      minimized: minimized ?? this.minimized,
+      fullscreen: fullscreen ?? this.fullscreen,
+    );
+  }
 }
 
 class FreeformLayoutState extends LayoutState<FreeformLayoutInfo> {}

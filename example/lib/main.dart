@@ -102,14 +102,14 @@ class _MyHomePageState extends State<MyHomePage> {
       ); */
       controller.addWindowEntry(
         clockEntry.newInstance(
-          ClockWidget(
+          content: ClockWidget(
             globalSize: MediaQuery.of(context).size,
           ),
         ),
       );
       controller.addWindowEntry(
         toolbarEntry.newInstance(
-          ChangeNotifierProvider.value(
+          content: ChangeNotifierProvider.value(
             value: controller,
             child: const ShellDirector(),
           ),
