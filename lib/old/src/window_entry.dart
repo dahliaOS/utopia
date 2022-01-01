@@ -1,3 +1,5 @@
+// ignore_for_file: constant_identifier_names
+
 import 'dart:typed_data';
 import 'dart:ui';
 
@@ -25,7 +27,7 @@ class WindowEntry extends ChangeNotifier {
   final Color bgColor;
   final double elevation;
   final bool allowResize;
-  ShapeBorder _shape;
+  final ShapeBorder _shape;
 
   final GlobalKey repaintBoundaryKey = GlobalKey();
 
@@ -130,7 +132,7 @@ class WindowEntry extends ChangeNotifier {
               borderRadius: BorderRadius.circular(4),
             ),
         _usesToolbar = true,
-        _toolbar = DefaultWindowToolbar();
+        _toolbar = const DefaultWindowToolbar();
 
   void toggleMaximize() {
     maximized = !maximized;
@@ -150,7 +152,7 @@ class WindowEntry extends ChangeNotifier {
 
 class WindowEntryId {
   int compareTo(WindowEntryId other) {
-    return this.hashCode.compareTo(other.hashCode);
+    return hashCode.compareTo(other.hashCode);
   }
 
   @override

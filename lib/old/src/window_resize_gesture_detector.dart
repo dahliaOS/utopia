@@ -6,11 +6,12 @@ class WindowResizeGestureDetector extends StatelessWidget {
   final Map<Alignment, GestureDragUpdateCallback> listeners;
   final GestureDragEndCallback? onPanEnd;
 
-  WindowResizeGestureDetector({
+  const WindowResizeGestureDetector({
     this.borderThickness,
     required this.listeners,
     this.onPanEnd,
-  });
+    Key? key,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -49,7 +50,7 @@ class WindowResizeGestureDetector extends StatelessWidget {
                 listeners[Alignment.centerLeft],
                 SystemMouseCursors.resizeLeft,
               ),
-              Spacer(),
+              const Spacer(),
               buildGestureDetector(
                 borderThickness,
                 null,

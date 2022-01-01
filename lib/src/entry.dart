@@ -33,13 +33,13 @@ class WindowEntry {
     final Map<WindowPropertyKey, Object?> completedProperties =
         Map.of(properties)
           ..addAll(overrideProperties)
-          ..putIfAbsent(id, () => Uuid().v4());
+          ..putIfAbsent(id, () => const Uuid().v4());
     assert(completedProperties.containsKey(id) &&
         completedProperties.containsKey(title) &&
         completedProperties.containsKey(icon));
 
     return LiveWindowEntry._(
-      content: content ?? SizedBox(),
+      content: content ?? const SizedBox(),
       layoutState: layoutInfo.createStateInternal(),
       features: features,
       registry: WindowPropertyRegistry(initialData: completedProperties),
@@ -124,8 +124,9 @@ class _WindowWrapperState extends State<WindowWrapper> {
   Widget build(BuildContext context) => _buildFeatures(context);
 
   Widget _buildFeatures(BuildContext context, [int index = 0]) {
-    if (index >= widget.features.length)
+    if (index >= widget.features.length) {
       return SizedBox.expand(child: widget.content);
+    }
 
     return widget.features[index]
         .build(context, _buildFeatures(context, index + 1));

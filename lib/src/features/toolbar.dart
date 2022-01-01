@@ -36,7 +36,7 @@ class ToolbarWindowFeature extends WindowFeature {
 }
 
 class DefaultToolbar extends StatelessWidget {
-  const DefaultToolbar();
+  const DefaultToolbar({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -65,11 +65,11 @@ class DefaultToolbar extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.center,
                       mainAxisSize: MainAxisSize.max,
                       children: [
-                        SizedBox(width: 4),
+                        const SizedBox(width: 4),
                         Expanded(
                           child: Text(
                             properties.info.title.toUpperCase(),
-                            style: TextStyle(
+                            style: const TextStyle(
                               fontSize: 14,
                               letterSpacing: 1,
                               color: Colors.white,
@@ -152,7 +152,7 @@ class DefaultToolbar extends StatelessWidget {
                   child: Container(
                     width: 8,
                     height: 8,
-                    decoration: ShapeDecoration(
+                    decoration: const ShapeDecoration(
                       shape: CircleBorder(),
                       color: Colors.white,
                     ),

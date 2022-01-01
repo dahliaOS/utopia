@@ -143,7 +143,8 @@ class WindowResizeGestureDetector extends StatelessWidget {
     required this.child,
     required this.borderThickness,
     this.listeners,
-  });
+    Key? key,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -192,7 +193,7 @@ class WindowResizeGestureDetector extends StatelessWidget {
                 listeners![Alignment.centerLeft],
                 SystemMouseCursors.resizeLeft,
               ),
-              Spacer(),
+              const Spacer(),
               buildGestureDetector(
                 borderThickness,
                 null,

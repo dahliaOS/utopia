@@ -10,7 +10,7 @@ class WindowHierarchy extends StatefulWidget {
   final List<Widget>? alwaysOnTopWindows;
   final EdgeInsets margin;
 
-  WindowHierarchy({
+  const WindowHierarchy({
     GlobalKey<WindowHierarchyState>? key,
     this.rootWindow,
     this.alwaysOnTopWindows,
@@ -152,11 +152,12 @@ class WindowHierarchyState extends State<WindowHierarchy> {
   }
 
   bool overlayIsActive(String uinqueId) {
-    if (_overlayEntries.length != 0 &&
+    if (_overlayEntries.isNotEmpty &&
         _overlayEntries.first.uniqueId == uinqueId) {
       return true;
-    } else
+    } else {
       return false;
+    }
   }
 
   /*void _windowSwitcherListener(RawKeyEvent event) {

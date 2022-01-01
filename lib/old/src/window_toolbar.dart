@@ -4,6 +4,8 @@ import 'package:provider/provider.dart';
 import 'package:utopia_wm/wm.dart';
 
 class DefaultWindowToolbar extends StatefulWidget {
+  const DefaultWindowToolbar({Key? key}) : super(key: key);
+
   @override
   _DefaultWindowToolbarState createState() => _DefaultWindowToolbarState();
 }
@@ -35,7 +37,7 @@ class _DefaultWindowToolbarState extends State<DefaultWindowToolbar> {
                   alignment: Alignment.center,
                   child: Row(
                     children: [
-                      SizedBox(width: 8),
+                      const SizedBox(width: 8),
                       entry.icon != null
                           ? Image(
                               image: entry.icon!,
@@ -47,10 +49,10 @@ class _DefaultWindowToolbarState extends State<DefaultWindowToolbar> {
                               size: 20,
                               color: fgColor,
                             ),
-                      SizedBox(width: 8),
-                      Spacer(),
+                      const SizedBox(width: 8),
+                      const Spacer(),
                       WindowToolbarButton(
-                        icon: Icon(Icons.minimize),
+                        icon: const Icon(Icons.minimize),
                         onTap: () {
                           final hierarchy =
                               context.read<WindowHierarchyState>();
@@ -66,8 +68,8 @@ class _DefaultWindowToolbarState extends State<DefaultWindowToolbar> {
                       ),
                       WindowToolbarButton(
                         icon: entry.maximized
-                            ? Icon(_ToolbarIcons.minimize)
-                            : Icon(_ToolbarIcons.maximize),
+                            ? const Icon(_ToolbarIcons.minimize)
+                            : const Icon(_ToolbarIcons.maximize),
                         onTap: () {
                           context
                               .read<WindowHierarchyState>()
@@ -80,11 +82,11 @@ class _DefaultWindowToolbarState extends State<DefaultWindowToolbar> {
                         hoverColor: Colors.black.withOpacity(0.2),
                       ),
                       WindowToolbarButton(
-                        icon: Icon(Icons.close),
+                        icon: const Icon(Icons.close),
                         onTap: onClose,
                         hoverColor: Colors.black.withOpacity(0.2),
                       ),
-                      SizedBox(width: 2),
+                      const SizedBox(width: 2),
                     ],
                   ),
                 ),
@@ -253,23 +255,24 @@ class WindowToolbarButton extends StatelessWidget {
   final VoidCallback onTap;
   final Color? hoverColor;
 
-  WindowToolbarButton({
+  const WindowToolbarButton({
     required this.icon,
     required this.onTap,
     this.hoverColor,
-  });
+    Key? key,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return SizedBox.fromSize(
-      size: Size.square(32),
+      size: const Size.square(32),
       child: Center(
         child: SizedBox.fromSize(
-          size: Size.square(28),
+          size: const Size.square(28),
           child: Material(
             color: Colors.transparent,
             child: InkWell(
-              customBorder: CircleBorder(),
+              customBorder: const CircleBorder(),
               hoverColor: hoverColor,
               splashColor: hoverColor,
               onTap: onTap,

@@ -7,14 +7,14 @@ import 'package:utopia_wm/old/src/window_hierarchy.dart';
 import 'package:utopia_wm/old/src/window_resize_gesture_detector.dart';
 
 class Window extends StatefulWidget {
-  final Key? key;
   final WindowEntry entry;
 
-  Window({
-    this.key,
+  const Window({
+    Key? key,
     required this.entry,
   }) : super(key: key);
 
+  @override
   _WindowState createState() => _WindowState();
 
   @override
@@ -75,7 +75,8 @@ class _WindowState extends State<Window> {
                   },
                   behavior: HitTestBehavior.translucent,
                   child: Material(
-                    shape: docked ? RoundedRectangleBorder() : entry.shape,
+                    shape:
+                        docked ? const RoundedRectangleBorder() : entry.shape,
                     clipBehavior: Clip.antiAlias,
                     elevation: entry.maximized ? 0 : entry.elevation,
                     color: entry.bgColor,
@@ -85,7 +86,7 @@ class _WindowState extends State<Window> {
                           ? BorderRadius.circular(0)
                           : BorderRadius.circular(8),
                       child: SingleChildScrollView(
-                        physics: NeverScrollableScrollPhysics(),
+                        physics: const NeverScrollableScrollPhysics(),
                         child: SizedBox(
                           height:
                               max(entry.minSize.height, windowRect.size.height),

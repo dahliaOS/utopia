@@ -8,7 +8,7 @@ import 'package:utopia_wm/old/src/window_hierarchy.dart';
 class DismissibleOverlay extends StatefulWidget {
   final DismissibleOverlayEntry entry;
 
-  DismissibleOverlay({
+  const DismissibleOverlay({
     Key? key,
     required this.entry,
   }) : super(key: key);
@@ -39,6 +39,7 @@ class _DismissibleOverlayState extends State<DismissibleOverlay>
     super.initState();
   }
 
+  @override
   void dispose() {
     widget.entry.animationController.dispose();
     super.dispose();

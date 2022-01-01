@@ -46,7 +46,7 @@ class SurfaceWindowFeature extends WindowFeature {
 }
 
 class DefaultWindowBackground extends StatelessWidget {
-  const DefaultWindowBackground();
+  const DefaultWindowBackground({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

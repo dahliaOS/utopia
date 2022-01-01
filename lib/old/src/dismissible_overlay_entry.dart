@@ -35,7 +35,7 @@ class DismissibleOverlayEntry extends ChangeNotifier {
 
 class DismissibleOverlayEntryId {
   int compareTo(DismissibleOverlayEntryId other) {
-    return this.hashCode.compareTo(other.hashCode);
+    return hashCode.compareTo(other.hashCode);
   }
 
   @override
