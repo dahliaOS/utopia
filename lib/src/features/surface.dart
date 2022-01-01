@@ -20,9 +20,10 @@ class SurfaceWindowFeature extends WindowFeature {
         WindowPropertyRegistry.of(context);
     final LayoutState layout = LayoutState.of(context);
 
-    final ShapeBorder shape = layout.maximized || layout.fullscreen
-        ? const RoundedRectangleBorder()
-        : properties.surface.shape;
+    final ShapeBorder shape =
+        layout.dock != WindowDock.none || layout.fullscreen
+            ? const RoundedRectangleBorder()
+            : properties.surface.shape;
 
     return _ShadowOccluder(
       shape: shape,

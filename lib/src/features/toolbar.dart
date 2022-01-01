@@ -82,8 +82,8 @@ class DefaultToolbar extends StatelessWidget {
                   ),
                   GestureDetector(
                     onPanStart: (details) {
-                      if (layout.maximized) {
-                        layout.maximized = !layout.maximized;
+                      if (layout.dock != WindowDock.none) {
+                        layout.dock = WindowDock.none;
                         layout.position = details.globalPosition +
                             Offset(
                               -layout.size.width / 2,
@@ -95,7 +95,11 @@ class DefaultToolbar extends StatelessWidget {
                       layout.position += details.delta;
                     },
                     onDoubleTap: () {
-                      layout.maximized = !layout.maximized;
+                      if (layout.dock == WindowDock.maximized) {
+                        layout.dock = WindowDock.none;
+                      } else {
+                        layout.dock = WindowDock.maximized;
+                      }
                     },
                   ),
                 ],
@@ -123,7 +127,11 @@ class DefaultToolbar extends StatelessWidget {
             ),
             InkWell(
               onTap: () {
-                layout.maximized = !layout.maximized;
+                if (layout.dock == WindowDock.maximized) {
+                  layout.dock = WindowDock.none;
+                } else {
+                  layout.dock = WindowDock.maximized;
+                }
               },
               child: SizedBox.fromSize(
                 size: Size.square(properties.toolbar.size),

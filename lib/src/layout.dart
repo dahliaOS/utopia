@@ -37,7 +37,7 @@ abstract class LayoutInfo {
   final Offset position;
   final bool alwaysOnTop;
   final AlwaysOnTopMode alwaysOnTopMode;
-  final bool maximized;
+  final WindowDock dock;
   final bool minimized;
   final bool fullscreen;
 
@@ -46,7 +46,7 @@ abstract class LayoutInfo {
     required this.position,
     this.alwaysOnTop = false,
     this.alwaysOnTopMode = AlwaysOnTopMode.window,
-    this.maximized = false,
+    this.dock = WindowDock.none,
     this.minimized = false,
     this.fullscreen = false,
   });
@@ -77,7 +77,7 @@ abstract class LayoutState<T extends LayoutInfo> extends ChangeNotifier {
   late Offset _position = info.position;
   late bool _alwaysOnTop = info.alwaysOnTop;
   late AlwaysOnTopMode _alwaysOnTopMode = info.alwaysOnTopMode;
-  late bool _maximized = info.maximized;
+  late WindowDock _dock = info.dock;
   late bool _minimized = info.minimized;
   late bool _fullscreen = info.fullscreen;
 
@@ -86,7 +86,7 @@ abstract class LayoutState<T extends LayoutInfo> extends ChangeNotifier {
   Rect get rect => position & size;
   bool get alwaysOnTop => _alwaysOnTop;
   AlwaysOnTopMode get alwaysOnTopMode => _alwaysOnTopMode;
-  bool get maximized => _maximized;
+  WindowDock get dock => _dock;
   bool get minimized => _minimized;
   bool get fullscreen => _fullscreen;
 
@@ -116,8 +116,8 @@ abstract class LayoutState<T extends LayoutInfo> extends ChangeNotifier {
     notifyListeners();
   }
 
-  set maximized(bool value) {
-    _maximized = value;
+  set dock(WindowDock value) {
+    _dock = value;
     notifyListeners();
   }
 
@@ -138,7 +138,7 @@ class FreeformLayoutInfo extends LayoutInfo {
     required Offset position,
     bool alwaysOnTop = false,
     AlwaysOnTopMode alwaysOnTopMode = AlwaysOnTopMode.window,
-    bool maximized = false,
+    WindowDock dock = WindowDock.none,
     bool minimized = false,
     bool fullscreen = false,
   }) : super(
@@ -146,7 +146,7 @@ class FreeformLayoutInfo extends LayoutInfo {
           position: position,
           alwaysOnTop: alwaysOnTop,
           alwaysOnTopMode: alwaysOnTopMode,
-          maximized: maximized,
+          dock: dock,
           minimized: minimized,
           fullscreen: fullscreen,
         );
@@ -156,16 +156,6 @@ class FreeformLayoutInfo extends LayoutInfo {
 }
 
 class FreeformLayoutState extends LayoutState<FreeformLayoutInfo> {}
-
-enum AlwaysOnTopMode {
-  /// A window set to be in this mode will be on top only of other windows and
-  /// behind system overlays
-  window,
-
-  /// If a window is set to be a system overlay then it will be over anything
-  /// else, without ever getting something else on top if not other system overlays
-  systemOverlay,
-}
 
 class FreeformLayoutDelegate extends LayoutDelegate<FreeformLayoutInfo> {
   const FreeformLayoutDelegate();
@@ -193,7 +183,7 @@ class FreeformLayoutDelegate extends LayoutDelegate<FreeformLayoutInfo> {
     if (window.layoutState.fullscreen) {
       mqRect = hierarchy.displayBounds;
       builder = (child) => Positioned.fill(child: child);
-    } else if (window.layoutState.maximized) {
+    } else if (window.layoutState.dock != WindowDock.none) {
       mqRect = hierarchy.wmBounds;
       builder = (child) => Positioned.fromRect(rect: mqRect, child: child);
     } else {
@@ -213,46 +203,23 @@ class FreeformLayoutDelegate extends LayoutDelegate<FreeformLayoutInfo> {
   }
 }
 
-/* class GridLayoutDelegate extends LayoutDelegate {
-  const GridLayoutDelegate();
+enum AlwaysOnTopMode {
+  /// A window set to be in this mode will be on top only of other windows and
+  /// behind system overlays
+  window,
 
-  @override
-  Widget layout(
-    BuildContext context,
-    List<LiveWindowEntry> entries,
-    List<String> focusHierarchy,
-  ) {
-    final WindowHierarchyController hierarchy = WindowHierarchy.of(context);
-    final List<LiveWindowEntry> gridEntries =
-        entries.where((e) => !e.registry.info.alwaysOnTop).toList();
-    final List<LiveWindowEntry> aotEntries =
-        entries.where((e) => e.registry.info.alwaysOnTop).toList();
+  /// If a window is set to be a system overlay then it will be over anything
+  /// else, without ever getting something else on top if not other system overlays or fullscreen windows
+  systemOverlay,
+}
 
-    return Stack(
-      children: [
-        Positioned.fromRect(
-          rect: hierarchy.wmBounds,
-          child: GridView.builder(
-            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 2,
-            ),
-            scrollDirection: Axis.horizontal,
-            itemBuilder: (context, index) => LayoutBuilder(
-              builder: (context, constraints) => MediaQuery(
-                data: MediaQueryData(size: constraints.biggest),
-                child: gridEntries[index].view,
-              ),
-            ),
-            itemCount: gridEntries.length,
-          ),
-        ),
-        ...aotEntries.map(
-          (e) => FreeformLayoutDelegate._buildWindow(
-            context,
-            e as LiveWindowEntry<FreeformLayoutInfo>,
-          ),
-        ),
-      ],
-    );
-  }
-} */
+enum WindowDock {
+  none,
+  maximized,
+  left,
+  right,
+  topLeft,
+  topRight,
+  bottomLeft,
+  bottomRight,
+}

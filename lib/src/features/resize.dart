@@ -22,7 +22,7 @@ class ResizeWindowFeature extends WindowFeature {
       child: content,
       borderThickness: 8,
       listeners: properties.resize.allowResize &&
-              !layout.maximized &&
+              layout.dock == WindowDock.none &&
               !layout.fullscreen
           ? getListeners(context)
           : null,
