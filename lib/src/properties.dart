@@ -17,59 +17,10 @@ class InfoWindowProperties extends WindowPropertiesBase {
   String get id => _registry.get(WindowEntry.id)!;
   String get title => _registry.get(WindowEntry.title);
   ImageProvider? get icon => _registry.get(WindowEntry.icon);
-  bool get alwaysOnTop => _registry.get(WindowEntry.alwaysOnTop);
-  AlwaysOnTopMode get alwaysOnTopMode =>
-      _registry.get(WindowEntry.alwaysOnTopMode);
   bool get showOnTaskbar => _registry.get(WindowEntry.showOnTaskbar);
 
   set title(String value) => _registry.set(WindowEntry.title, value);
   set icon(ImageProvider? value) => _registry.set(WindowEntry.icon, value);
-  set alwaysOnTop(bool value) => _registry.set(WindowEntry.alwaysOnTop, value);
-  set alwaysOnTopMode(AlwaysOnTopMode value) =>
-      _registry.set(WindowEntry.alwaysOnTopMode, value);
-}
-
-class MinimizeWindowProperties extends WindowPropertiesBase {
-  const MinimizeWindowProperties.mapFrom(WindowPropertyRegistry registry)
-      : super._new(registry);
-
-  bool get minimized => _registry.get(MinimizeWindowFeature.minimized);
-
-  set minimized(bool value) =>
-      _registry.set(MinimizeWindowFeature.minimized, value);
-}
-
-class GeometryWindowProperties extends WindowPropertiesBase {
-  const GeometryWindowProperties.mapFrom(WindowPropertyRegistry registry)
-      : super._new(registry);
-
-  Size get size => _registry.get(GeometryWindowFeature.size);
-  Offset get position => _registry.get(GeometryWindowFeature.position);
-  Rect get rect => Rect.fromLTWH(
-        position.dx,
-        position.dy,
-        size.width,
-        size.height,
-      );
-  bool get maximized => _registry.get(GeometryWindowFeature.maximized);
-
-  set size(Size value) {
-    if (maximized) return;
-    _registry.set(GeometryWindowFeature.size, value);
-  }
-
-  set position(Offset value) {
-    if (maximized) return;
-    _registry.set(GeometryWindowFeature.position, value);
-  }
-
-  set rect(Rect value) {
-    position = Offset(value.left, value.top);
-    size = value.size;
-  }
-
-  set maximized(bool value) =>
-      _registry.set(GeometryWindowFeature.maximized, value);
 }
 
 class SurfaceWindowProperties extends WindowPropertiesBase {

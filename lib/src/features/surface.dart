@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:utopia_wm/src/features/base.dart';
+import 'package:utopia_wm/src/layout.dart';
 import 'package:utopia_wm/src/registry.dart';
 
 class SurfaceWindowFeature extends WindowFeature {
@@ -17,8 +18,9 @@ class SurfaceWindowFeature extends WindowFeature {
   Widget build(BuildContext context, Widget content) {
     final WindowPropertyRegistry properties =
         WindowPropertyRegistry.of(context);
+    final LayoutState layout = LayoutState.of(context);
 
-    final ShapeBorder shape = properties.geometry.maximized
+    final ShapeBorder shape = layout.maximized || layout.fullscreen
         ? const RoundedRectangleBorder()
         : properties.surface.shape;
 

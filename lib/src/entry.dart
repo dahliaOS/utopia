@@ -1,6 +1,7 @@
 import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 import 'package:utopia_wm/src/features/base.dart';
+import 'package:utopia_wm/src/layout.dart';
 import 'package:uuid/uuid.dart';
 
 import 'registry.dart';
@@ -12,17 +13,15 @@ class WindowEntry {
       WindowPropertyKey('window.title', 'Window');
   static const WindowPropertyKey<ImageProvider?> icon =
       WindowPropertyKey('window.icon', null);
-  static const WindowPropertyKey<bool> alwaysOnTop =
-      WindowPropertyKey('window.alwaysOnTop', false);
-  static const WindowPropertyKey<AlwaysOnTopMode> alwaysOnTopMode =
-      WindowPropertyKey('window.alwaysOnTopMode', AlwaysOnTopMode.window);
   static const WindowPropertyKey<bool> showOnTaskbar =
       WindowPropertyKey('window.showOnTaskbar', true);
 
+  final LayoutInfo layoutInfo;
   final List<WindowFeature> features;
   final Map<WindowPropertyKey, Object?> properties;
 
   const WindowEntry({
+    required this.layoutInfo,
     required this.features,
     required this.properties,
   });
@@ -41,24 +40,16 @@ class WindowEntry {
 
     return LiveWindowEntry._(
       content: content ?? SizedBox(),
+      layoutState: layoutInfo.createStateInternal(),
       features: features,
       registry: WindowPropertyRegistry(initialData: completedProperties),
     );
   }
 }
 
-enum AlwaysOnTopMode {
-  /// A window set to be in this mode will be on top only of other windows and
-  /// behind system overlays
-  window,
-
-  /// If a window is set to be a system overlay then it will be over anything
-  /// else, without ever getting something else on top if not other system overlays
-  systemOverlay,
-}
-
 class LiveWindowEntry {
   final Widget content;
+  final LayoutState layoutState;
   final List<WindowFeature> features;
   final WindowPropertyRegistry registry;
   bool _disposed = false;
@@ -75,10 +66,14 @@ class LiveWindowEntry {
 
   LiveWindowEntry._({
     required this.content,
+    required this.layoutState,
     required this.features,
     required this.registry,
-  }) : _view = ChangeNotifierProvider.value(
-          value: registry,
+  }) : _view = MultiProvider(
+          providers: [
+            ChangeNotifierProvider.value(value: registry),
+            ChangeNotifierProvider.value(value: layoutState),
+          ],
           child: WindowWrapper(
             features: features,
             content: content,
@@ -111,6 +106,7 @@ class _WindowWrapperState extends State<WindowWrapper> {
   @override
   void initState() {
     super.initState();
+
     final registry = WindowPropertyRegistry.of(context, listen: false);
     for (WindowFeature feature in widget.features) {
       for (WindowPropertyKey property in feature.requiredProperties) {

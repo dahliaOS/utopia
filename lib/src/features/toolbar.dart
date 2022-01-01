@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:utopia_wm/src/features/base.dart';
 import 'package:utopia_wm/src/hierarchy.dart';
+import 'package:utopia_wm/src/layout.dart';
 import 'package:utopia_wm/src/registry.dart';
 
 class ToolbarWindowFeature extends WindowFeature {
@@ -15,6 +16,9 @@ class ToolbarWindowFeature extends WindowFeature {
   Widget build(BuildContext context, Widget content) {
     final WindowPropertyRegistry properties =
         WindowPropertyRegistry.of(context);
+    final LayoutState layout = LayoutState.of(context);
+
+    if (layout.fullscreen) return content;
 
     return Column(
       children: [
@@ -38,6 +42,7 @@ class DefaultToolbar extends StatelessWidget {
   Widget build(BuildContext context) {
     final WindowPropertyRegistry properties =
         WindowPropertyRegistry.of(context);
+    final LayoutState layout = LayoutState.of(context);
 
     return Container(
       width: double.infinity,
@@ -77,21 +82,20 @@ class DefaultToolbar extends StatelessWidget {
                   ),
                   GestureDetector(
                     onPanStart: (details) {
-                      if (properties.geometry.maximized) {
-                        properties.geometry.maximized = false;
-                        properties.geometry.position = details.globalPosition +
+                      if (layout.maximized) {
+                        layout.maximized = !layout.maximized;
+                        layout.position = details.globalPosition +
                             Offset(
-                              -properties.geometry.size.width / 2,
+                              -layout.size.width / 2,
                               -properties.toolbar.size / 2,
                             );
                       }
                     },
                     onPanUpdate: (details) {
-                      properties.geometry.position += details.delta;
+                      layout.position += details.delta;
                     },
                     onDoubleTap: () {
-                      properties.geometry.maximized =
-                          !properties.geometry.maximized;
+                      layout.maximized = !layout.maximized;
                     },
                   ),
                 ],
@@ -99,7 +103,7 @@ class DefaultToolbar extends StatelessWidget {
             ),
             InkWell(
               onTap: () {
-                properties.minimize.minimized = true;
+                layout.minimized = true;
               },
               child: SizedBox.fromSize(
                 size: Size.square(properties.toolbar.size),
@@ -119,7 +123,7 @@ class DefaultToolbar extends StatelessWidget {
             ),
             InkWell(
               onTap: () {
-                properties.geometry.maximized = !properties.geometry.maximized;
+                layout.maximized = !layout.maximized;
               },
               child: SizedBox.fromSize(
                 size: Size.square(properties.toolbar.size),

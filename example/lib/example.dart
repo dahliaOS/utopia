@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:utopia_wm/wm_new.dart';
 
 class ExampleApp extends StatelessWidget {
@@ -16,6 +15,7 @@ class ExampleApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       shortcuts: const {},
       home: const MyHomePage(),
+      useInheritedMediaQuery: true,
     );
   }
 }
@@ -38,7 +38,8 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    final registry = context.watch<WindowPropertyRegistry>();
+    final WindowPropertyRegistry registry = WindowPropertyRegistry.of(context);
+    final LayoutState layout = LayoutState.of(context);
 
     return Scaffold(
       appBar: AppBar(
@@ -65,7 +66,14 @@ class _MyHomePageState extends State<MyHomePage> {
             TextButton(
               child: const Text("Toggle always on top"),
               onPressed: () {
-                registry.info.alwaysOnTop = !registry.info.alwaysOnTop;
+                layout.alwaysOnTop = !layout.alwaysOnTop;
+                setState(() {});
+              },
+            ),
+            TextButton(
+              child: const Text("Toggle fullscreen"),
+              onPressed: () {
+                layout.fullscreen = !layout.fullscreen;
                 setState(() {});
               },
             ),

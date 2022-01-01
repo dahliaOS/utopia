@@ -67,6 +67,7 @@ class _TaskbarState extends State<Taskbar> {
             ...widget.controller.entries.map(
               (e) => _EntryButton(
                 properties: e.registry,
+                layout: e.layoutState,
                 controller: widget.controller,
               ),
             ),
@@ -82,9 +83,11 @@ class _TaskbarState extends State<Taskbar> {
 class _EntryButton extends StatefulWidget {
   final WindowHierarchyController controller;
   final WindowPropertyRegistry properties;
+  final LayoutState layout;
 
   const _EntryButton({
     required this.properties,
+    required this.layout,
     required this.controller,
   });
 
@@ -97,19 +100,20 @@ class _EntryButtonState extends State<_EntryButton> {
   void initState() {
     super.initState();
     widget.properties.addListener(() => setState(() {}));
+    widget.layout.addListener(() => setState(() {}));
   }
 
   @override
   Widget build(BuildContext context) {
     final bool isFocused =
         widget.controller.isFocused(widget.properties.info.id) &&
-            !widget.properties.minimize.minimized;
+            !widget.layout.minimized;
 
     return Material(
       color: isFocused ? Colors.white : Colors.transparent,
       child: InkWell(
         onTap: () {
-          widget.properties.minimize.minimized = false;
+          widget.layout.minimized = false;
           widget.controller.requestEntryFocus(widget.properties.info.id);
         },
         child: Container(
@@ -127,8 +131,8 @@ class _EntryButtonState extends State<_EntryButton> {
                   fontWeight: isFocused ? FontWeight.bold : FontWeight.normal,
                 ),
               ),
-              if (widget.properties.info.alwaysOnTop) const SizedBox(width: 8),
-              if (widget.properties.info.alwaysOnTop)
+              if (widget.layout.alwaysOnTop) const SizedBox(width: 8),
+              if (widget.layout.alwaysOnTop)
                 Icon(
                   Icons.push_pin,
                   color: isFocused ? Colors.black : Colors.white,

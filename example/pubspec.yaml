@@ -9,10 +9,11 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  
+
+  flutter_staggered_grid_view: ^0.5.0
   utopia_wm:
     path: ..
-    
+
   provider: ^6.0.0
   intl: ^0.17.0
 

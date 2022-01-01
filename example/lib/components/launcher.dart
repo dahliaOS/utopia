@@ -7,8 +7,6 @@ import 'package:utopia_wm/wm_new.dart';
 class Launcher extends StatelessWidget {
   static const entry = WindowEntry(
     features: [
-      MinimizeWindowFeature(),
-      GeometryWindowFeature(),
       ShadowWindowFeature(),
       ResizeWindowFeature(),
       FocusableWindowFeature(),
@@ -16,11 +14,13 @@ class Launcher extends StatelessWidget {
       ToolbarWindowFeature(),
       PaddedContentWindowFeature(),
     ],
+    layoutInfo: FreeformLayoutInfo(
+      size: Size(400, 300),
+      position: Offset.zero,
+    ),
     properties: {
       WindowEntry.title: "Example window",
       WindowEntry.icon: null,
-      GeometryWindowFeature.size: Size(400, 300),
-      GeometryWindowFeature.position: Offset.zero,
       ResizeWindowFeature.minSize: Size(320, 240),
       ResizeWindowFeature.maxSize: Size.infinite,
     },
@@ -136,6 +136,10 @@ class PaddedContentWindowFeature extends WindowFeature {
 
   @override
   Widget build(BuildContext context, Widget content) {
+    final LayoutState layout = LayoutState.of(context);
+
+    if (layout.fullscreen) return content;
+
     return Padding(
       padding: const EdgeInsets.fromLTRB(1, 0, 1, 1),
       child: content,

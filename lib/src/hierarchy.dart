@@ -1,13 +1,17 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:utopia_wm/src/layout.dart';
 import 'entry.dart';
 import 'registry.dart';
 
 class WindowHierarchy extends StatefulWidget {
   final WindowHierarchyController controller;
+  final LayoutDelegate layoutDelegate;
 
   const WindowHierarchy({
     required this.controller,
+    required this.layoutDelegate,
     Key? key,
   }) : super(key: key);
 
@@ -35,18 +39,66 @@ class _WindowHierarchyState extends State<WindowHierarchy> {
 
   Rect get _wmBounds => widget.controller.wmInsets
       .deflateRect(Offset.zero & MediaQuery.of(context).size);
+  Rect get _displayBounds => Offset.zero & MediaQuery.of(context).size;
 
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider.value(
       value: widget.controller,
-      builder: (context, child) {
-        return Stack(
-          children:
-              widget.controller.entriesByFocus.map((e) => e.view).toList(),
-          clipBehavior: Clip.none,
-        );
-      },
+      builder: (context, _) => _LayoutBuilder(
+        delegate: widget.layoutDelegate,
+        entries: widget.controller.rawEntries,
+        focusHierarchy: widget.controller.focusHierarchy,
+      ),
+    );
+  }
+}
+
+class _LayoutBuilder extends StatefulWidget {
+  final LayoutDelegate delegate;
+  final List<LiveWindowEntry> entries;
+  final List<String> focusHierarchy;
+
+  const _LayoutBuilder({
+    required this.delegate,
+    required this.entries,
+    required this.focusHierarchy,
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  _LayoutBuilderState createState() => _LayoutBuilderState();
+}
+
+class _LayoutBuilderState extends State<_LayoutBuilder> {
+  @override
+  void didUpdateWidget(covariant _LayoutBuilder old) {
+    super.didUpdateWidget(old);
+
+    if (!listEquals(widget.entries, old.entries) ||
+        widget.delegate != old.delegate) {
+      for (final LiveWindowEntry entry in old.entries) {
+        entry.layoutState.removeListener(_listenerCallback);
+      }
+
+      for (final LiveWindowEntry entry in widget.entries) {
+        entry.layoutState.addListener(_listenerCallback);
+      }
+    }
+  }
+
+  void _listenerCallback() {
+    setState(() {});
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox.expand(
+      child: widget.delegate.buildAndLayout(
+        context,
+        widget.entries,
+        widget.focusHierarchy,
+      ),
     );
   }
 }
@@ -65,6 +117,8 @@ class WindowHierarchyController with ChangeNotifier {
         (e) => e.registry.info.showOnTaskbar,
       )
       .toList();
+  List<LiveWindowEntry> get rawEntries => List.unmodifiable(_entries);
+  List<String> get focusHierarchy => List.unmodifiable(_focusHierarchy);
 
   void _provideState(_WindowHierarchyState state) {
     _state = state;
@@ -105,47 +159,15 @@ class WindowHierarchyController with ChangeNotifier {
   }
 
   Rect get wmBounds => _state._wmBounds;
+  Rect get displayBounds => _state._displayBounds;
 
-  List<LiveWindowEntry> get entriesByFocus {
-    final List<LiveWindowEntry> alwaysOnTopWindowEntries = _entries
-        .where(
-          (e) =>
-              e.registry.info.alwaysOnTop &&
-              e.registry.info.alwaysOnTopMode == AlwaysOnTopMode.window,
-        )
-        .toList();
-    final List<LiveWindowEntry> alwaysOnTopSysOverlayEntries = _entries
-        .where(
-          (e) =>
-              e.registry.info.alwaysOnTop &&
-              e.registry.info.alwaysOnTopMode == AlwaysOnTopMode.systemOverlay,
-        )
-        .toList();
+  List<LiveWindowEntry> get entriesByFocus =>
+      WindowEntryUtils.getEntriesByFocus(_entries, _focusHierarchy);
 
-    return [
-      ...normalEntries,
-      ...alwaysOnTopWindowEntries,
-      ...alwaysOnTopSysOverlayEntries,
-    ];
-  }
+  List<LiveWindowEntry> get sortedEntries =>
+      WindowEntryUtils.getSortedEntries(_entries, _focusHierarchy);
 
-  List<LiveWindowEntry> get normalEntries {
-    final List<LiveWindowEntry> workList = [];
-
-    for (final String id in _focusHierarchy) {
-      final LiveWindowEntry entry =
-          _entries.firstWhere((e) => e.registry.info.id == id);
-      if (!entry.registry.info.alwaysOnTop) {
-        workList.add(entry);
-      }
-    }
-
-    return workList;
-  }
-
-  bool isFocused(String id) {
-    return _focusHierarchy.last == id;
-  }
+  bool isFocused(String id) => WindowEntryUtils.isFocused(_focusHierarchy, id);
 
   void _checkForInitialized() {
     if (!_initialized) {
@@ -153,5 +175,63 @@ class WindowHierarchyController with ChangeNotifier {
         "The controller is not bound to any hierarchy or it's not initializated yet",
       );
     }
+  }
+}
+
+class WindowEntryUtils {
+  WindowEntryUtils._();
+
+  static bool isFocused(List<String> focusHierarchy, String id) {
+    return focusHierarchy.last == id;
+  }
+
+  static List<LiveWindowEntry> getEntriesByFocus(
+    List<LiveWindowEntry> entries,
+    List<String> focusHierarchy,
+  ) {
+    final List<LiveWindowEntry> fullscreenEntries =
+        entries.where((e) => e.layoutState.fullscreen).toList();
+    final List<LiveWindowEntry> alwaysOnTopWindowEntries = entries
+        .where(
+          (e) =>
+              e.layoutState.alwaysOnTop &&
+              e.layoutState.alwaysOnTopMode == AlwaysOnTopMode.window &&
+              !e.layoutState.fullscreen,
+        )
+        .toList();
+    final List<LiveWindowEntry> alwaysOnTopSysOverlayEntries = entries
+        .where(
+          (e) =>
+              e.layoutState.alwaysOnTop &&
+              e.layoutState.alwaysOnTopMode == AlwaysOnTopMode.systemOverlay &&
+              !e.layoutState.fullscreen,
+        )
+        .toList();
+
+    return [
+      ...getSortedEntries(entries, focusHierarchy),
+      ...alwaysOnTopWindowEntries,
+      ...alwaysOnTopSysOverlayEntries,
+      ...fullscreenEntries,
+    ];
+  }
+
+  static List<LiveWindowEntry> getSortedEntries(
+    List<LiveWindowEntry> entries,
+    List<String> focusHierarchy,
+  ) {
+    assert(entries.length == focusHierarchy.length);
+
+    final List<LiveWindowEntry> workList = [];
+
+    for (final String id in focusHierarchy) {
+      final LiveWindowEntry entry =
+          entries.firstWhere((e) => e.registry.info.id == id);
+      if (!entry.layoutState.alwaysOnTop && !entry.layoutState.fullscreen) {
+        workList.add(entry);
+      }
+    }
+
+    return workList;
   }
 }

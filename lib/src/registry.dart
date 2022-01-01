@@ -3,13 +3,12 @@ import 'package:provider/provider.dart';
 
 import 'properties.dart';
 
-//typedef WindowProperties = Map<WindowPropertyKey, Object?>;
+typedef WindowProperties = Map<WindowPropertyKey, Object?>;
 
 class WindowPropertyRegistry with ChangeNotifier {
-  final Map<WindowPropertyKey, Object?> _data = {};
+  final WindowProperties _data = {};
 
-  WindowPropertyRegistry(
-      {Map<WindowPropertyKey, Object?> initialData = const {}}) {
+  WindowPropertyRegistry({WindowProperties initialData = const {}}) {
     _data.addAll(initialData);
   }
 
@@ -63,12 +62,6 @@ class WindowPropertyKey<T> {
 
 extension RegistryUtils on WindowPropertyRegistry {
   InfoWindowProperties get info => InfoWindowProperties.mapFrom(this);
-
-  MinimizeWindowProperties get minimize =>
-      MinimizeWindowProperties.mapFrom(this);
-
-  GeometryWindowProperties get geometry =>
-      GeometryWindowProperties.mapFrom(this);
 
   SurfaceWindowProperties get surface => SurfaceWindowProperties.mapFrom(this);
 

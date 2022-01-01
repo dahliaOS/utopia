@@ -16,11 +16,14 @@ class ResizeWindowFeature extends WindowFeature {
   Widget build(BuildContext context, Widget content) {
     final WindowPropertyRegistry properties =
         WindowPropertyRegistry.of(context);
+    final LayoutState layout = LayoutState.of(context);
 
     return WindowResizeGestureDetector(
       child: content,
       borderThickness: 8,
-      listeners: properties.resize.allowResize && !properties.geometry.maximized
+      listeners: properties.resize.allowResize &&
+              !layout.maximized &&
+              !layout.fullscreen
           ? getListeners(context)
           : null,
     );
@@ -66,26 +69,27 @@ class ResizeWindowFeature extends WindowFeature {
 
     final WindowPropertyRegistry properties =
         WindowPropertyRegistry.of(context, listen: false);
+    final LayoutState layout = LayoutState.of(context, listen: false);
 
     double newLeft = _value(
       left,
       Axis.horizontal,
-      properties.geometry.rect.left,
+      layout.rect.left,
     );
     double newTop = _value(
       top,
       Axis.vertical,
-      properties.geometry.rect.top,
+      layout.rect.top,
     );
     double newRight = _value(
       right,
       Axis.horizontal,
-      properties.geometry.rect.right,
+      layout.rect.right,
     );
     double newBottom = _value(
       bottom,
       Axis.vertical,
-      properties.geometry.rect.bottom,
+      layout.rect.bottom,
     );
 
     final double width = newRight - newLeft;
@@ -123,8 +127,7 @@ class ResizeWindowFeature extends WindowFeature {
       }
     }
 
-    properties.geometry.rect =
-        Rect.fromLTRB(newLeft, newTop, newRight, newBottom);
+    layout.rect = Rect.fromLTRB(newLeft, newTop, newRight, newBottom);
   }
 
   @override
