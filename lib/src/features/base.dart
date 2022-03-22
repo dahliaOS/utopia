@@ -1,5 +1,5 @@
 import 'package:flutter/widgets.dart';
-import 'package:utopia_wm/wm_new.dart';
+import 'package:utopia_wm/wm.dart';
 
 abstract class WindowFeature {
   const WindowFeature();

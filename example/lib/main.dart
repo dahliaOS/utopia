@@ -6,7 +6,7 @@ import 'package:example/shell.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:provider/provider.dart';
-import 'package:utopia_wm/wm_new.dart';
+import 'package:utopia_wm/wm.dart';
 
 void main() {
   runApp(const MyApp());
@@ -96,7 +96,7 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance!.addPostFrameCallback((timeStamp) {
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       /* key.currentState?.addWindowEntry(
         wallpaperEntry.newInstance(null),
       ); */

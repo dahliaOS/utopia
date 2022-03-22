@@ -4,7 +4,7 @@ import 'package:example/shell.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
-import 'package:utopia_wm/wm_new.dart';
+import 'package:utopia_wm/wm.dart';
 
 class Taskbar extends StatefulWidget {
   final WindowHierarchyController controller;

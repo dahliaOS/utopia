@@ -1,7 +1,7 @@
 import 'package:example/components/launcher.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:utopia_wm/wm_new.dart';
+import 'package:utopia_wm/wm.dart';
 
 import 'components/taskbar.dart';
 
@@ -24,7 +24,7 @@ class ShellDirectorState extends State<ShellDirector> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance!.addPostFrameCallback((timeStamp) {
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       WindowHierarchy.of(context, listen: false).wmInsets =
           const EdgeInsets.only(bottom: 25);
     });

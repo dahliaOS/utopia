@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:utopia_wm/wm_new.dart';
+import 'package:utopia_wm/src/features/base.dart';
+import 'package:utopia_wm/src/layout.dart';
+import 'package:utopia_wm/src/registry.dart';
 
 class ResizeWindowFeature extends WindowFeature {
   static const WindowPropertyKey<Size> minSize =

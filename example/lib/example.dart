@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:utopia_wm/wm_new.dart';
+import 'package:utopia_wm/wm.dart';
 
 class ExampleApp extends StatelessWidget {
   const ExampleApp({Key? key}) : super(key: key);

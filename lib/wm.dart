@@ -1,9 +1,8 @@
 library utopia_wm;
 
-export 'package:utopia_wm/old/src/dismissible_overlay.dart';
-export 'package:utopia_wm/old/src/dismissible_overlay_entry.dart';
-export 'package:utopia_wm/old/src/window.dart';
-export 'package:utopia_wm/old/src/window_entry.dart';
-export 'package:utopia_wm/old/src/window_hierarchy.dart';
-export 'package:utopia_wm/old/src/window_resize_gesture_detector.dart';
-export 'package:utopia_wm/old/src/window_toolbar.dart';
+export 'package:utopia_wm/src/entry.dart';
+export 'package:utopia_wm/src/features/features.dart';
+export 'package:utopia_wm/src/hierarchy.dart';
+export 'package:utopia_wm/src/layout.dart';
+export 'package:utopia_wm/src/properties.dart';
+export 'package:utopia_wm/src/registry.dart';
