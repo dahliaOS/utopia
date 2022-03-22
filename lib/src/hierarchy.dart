@@ -106,11 +106,10 @@ class _LayoutBuilderState extends State<_LayoutBuilder> {
 class WindowHierarchyController with ChangeNotifier {
   late final _WindowHierarchyState _state;
   bool _initialized = false;
+
   final List<LiveWindowEntry> _entries = [];
   final List<String> _focusHierarchy = [];
   EdgeInsets _wmInsets = EdgeInsets.zero;
-
-  WindowHierarchyController();
 
   List<LiveWindowEntry> get entries => _entries
       .where(

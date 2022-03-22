@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:utopia_wm/src/entry.dart';
+import 'package:utopia_wm/src/events/resize.dart';
 import 'package:utopia_wm/src/features/base.dart';
 import 'package:utopia_wm/src/layout.dart';
 import 'package:utopia_wm/src/registry.dart';
@@ -19,6 +21,8 @@ class ResizeWindowFeature extends WindowFeature {
     final WindowPropertyRegistry properties =
         WindowPropertyRegistry.of(context);
     final LayoutState layout = LayoutState.of(context);
+    final WindowEventHandler? eventHandler =
+        WindowEventHandler.maybeOf(context);
 
     return WindowResizeGestureDetector(
       child: content,
@@ -28,6 +32,12 @@ class ResizeWindowFeature extends WindowFeature {
               !layout.fullscreen
           ? getListeners(context)
           : null,
+      onStartResize: () => eventHandler?.onEvent(
+        WindowResizeStartEvent(timestamp: DateTime.now()),
+      ),
+      onEndResize: () => eventHandler?.onEvent(
+        WindowResizeEndEvent(timestamp: DateTime.now()),
+      ),
     );
   }
 
@@ -140,11 +150,15 @@ class WindowResizeGestureDetector extends StatelessWidget {
   final double borderThickness;
   final Map<Alignment, GestureDragUpdateCallback>? listeners;
   final Widget child;
+  final VoidCallback? onStartResize;
+  final VoidCallback? onEndResize;
 
   const WindowResizeGestureDetector({
     required this.child,
     required this.borderThickness,
     this.listeners,
+    this.onStartResize,
+    this.onEndResize,
     Key? key,
   }) : super(key: key);
 
@@ -245,7 +259,9 @@ class WindowResizeGestureDetector extends StatelessWidget {
         width: width,
         height: height,
         child: GestureDetector(
+          onPanStart: onStartResize != null ? (_) => onStartResize!() : null,
           onPanUpdate: onPanUpdate,
+          onPanEnd: onEndResize != null ? (_) => onEndResize!() : null,
         ),
       ),
     );

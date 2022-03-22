@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:utopia_wm/src/entry.dart';
+import 'package:utopia_wm/src/events/events.dart';
 import 'package:utopia_wm/src/features/base.dart';
 import 'package:utopia_wm/src/hierarchy.dart';
 import 'package:utopia_wm/src/layout.dart';
@@ -43,6 +45,8 @@ class DefaultToolbar extends StatelessWidget {
     final WindowPropertyRegistry properties =
         WindowPropertyRegistry.of(context);
     final LayoutState layout = LayoutState.of(context);
+    final WindowEventHandler? eventHandler =
+        WindowEventHandler.maybeOf(context);
 
     return Container(
       width: double.infinity,
@@ -108,6 +112,9 @@ class DefaultToolbar extends StatelessWidget {
             InkWell(
               onTap: () {
                 layout.minimized = true;
+                eventHandler?.onEvent(
+                  WindowMinimizeButtonPressEvent(DateTime.now()),
+                );
               },
               child: SizedBox.fromSize(
                 size: Size.square(properties.toolbar.size),
@@ -132,6 +139,9 @@ class DefaultToolbar extends StatelessWidget {
                 } else {
                   layout.dock = WindowDock.maximized;
                 }
+                eventHandler?.onEvent(
+                  WindowMaximizeButtonPressEvent(DateTime.now()),
+                );
               },
               child: SizedBox.fromSize(
                 size: Size.square(properties.toolbar.size),
@@ -151,6 +161,9 @@ class DefaultToolbar extends StatelessWidget {
             ),
             InkWell(
               onTap: () {
+                eventHandler?.onEvent(
+                  WindowCloseButtonPressEvent(DateTime.now()),
+                );
                 WindowHierarchy.of(context, listen: false)
                     .removeWindowEntry(properties.info.id);
               },

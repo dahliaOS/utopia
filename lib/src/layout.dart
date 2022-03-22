@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:utopia_wm/src/entry.dart';
+import 'package:utopia_wm/src/events/layout.dart';
 import 'package:utopia_wm/src/hierarchy.dart';
 
 abstract class LayoutDelegate<T extends LayoutInfo> {
@@ -61,9 +62,10 @@ abstract class LayoutInfo {
     bool? fullscreen,
   });
 
-  LayoutState createStateInternal() {
+  LayoutState createStateInternal([WindowEventHandler? eventHandler]) {
     final LayoutState state = createState();
     state._info = this;
+    state._eventHandler = eventHandler;
     return state;
   }
 
@@ -82,6 +84,8 @@ abstract class LayoutState<T extends LayoutInfo> extends ChangeNotifier {
 
   T? _info;
   T get info => _info!;
+
+  WindowEventHandler? _eventHandler;
 
   late Size _size = info.size;
   late Offset _position = info.position;
@@ -102,42 +106,84 @@ abstract class LayoutState<T extends LayoutInfo> extends ChangeNotifier {
 
   set size(Size value) {
     _size = value;
+    _eventHandler?.onEvent(WindowSizeChangeEvent(
+      size: value,
+      timestamp: DateTime.now(),
+    ));
     notifyListeners();
   }
 
   set position(Offset value) {
     _position = value;
+    _eventHandler?.onEvent(WindowPositionChangeEvent(
+      position: value,
+      timestamp: DateTime.now(),
+    ));
     notifyListeners();
   }
 
   set rect(Rect value) {
+    if (_position != value.topLeft) {
+      _eventHandler?.onEvent(WindowPositionChangeEvent(
+        position: value.topLeft,
+        timestamp: DateTime.now(),
+      ));
+    }
     _position = value.topLeft;
+
+    if (_size != value.size) {
+      _eventHandler?.onEvent(WindowSizeChangeEvent(
+        size: value.size,
+        timestamp: DateTime.now(),
+      ));
+    }
     _size = value.size;
+
     notifyListeners();
   }
 
   set alwaysOnTop(bool value) {
     _alwaysOnTop = value;
+    _eventHandler?.onEvent(WindowAlwaysOnTopChangeEvent(
+      alwaysOnTop: value,
+      timestamp: DateTime.now(),
+    ));
     notifyListeners();
   }
 
   set alwaysOnTopMode(AlwaysOnTopMode value) {
     _alwaysOnTopMode = value;
+    _eventHandler?.onEvent(WindowAlwaysOnTopModeChangeEvent(
+      alwaysOnTopMode: value,
+      timestamp: DateTime.now(),
+    ));
     notifyListeners();
   }
 
   set dock(WindowDock value) {
     _dock = value;
+    _eventHandler?.onEvent(WindowDockChangeEvent(
+      dock: value,
+      timestamp: DateTime.now(),
+    ));
     notifyListeners();
   }
 
   set minimized(bool value) {
     _minimized = value;
+    _eventHandler?.onEvent(WindowMinimizeEvent(
+      minimized: value,
+      timestamp: DateTime.now(),
+    ));
     notifyListeners();
   }
 
   set fullscreen(bool value) {
     _fullscreen = value;
+    _eventHandler?.onEvent(WindowFullscreenEvent(
+      fullscreen: value,
+      timestamp: DateTime.now(),
+    ));
     notifyListeners();
   }
 }

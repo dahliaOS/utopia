@@ -1,5 +1,6 @@
 import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
+import 'package:utopia_wm/src/events/base.dart';
 import 'package:utopia_wm/src/features/base.dart';
 import 'package:utopia_wm/src/layout.dart';
 import 'package:uuid/uuid.dart';
@@ -28,6 +29,7 @@ class WindowEntry {
 
   LiveWindowEntry newInstance({
     Widget? content,
+    WindowEventHandler? eventHandler,
     LayoutInfo Function(LayoutInfo info)? overrideLayout,
     Map<WindowPropertyKey, Object?> overrideProperties = const {},
   }) {
@@ -36,15 +38,15 @@ class WindowEntry {
           ..addAll(overrideProperties)
           ..putIfAbsent(id, () => const Uuid().v4());
     assert(completedProperties.containsKey(id) &&
-        completedProperties.containsKey(title) &&
-        completedProperties.containsKey(icon));
+        completedProperties.containsKey(title));
 
     final LayoutInfo info = overrideLayout?.call(layoutInfo) ?? layoutInfo;
 
     return LiveWindowEntry._(
       content: content ?? const SizedBox(),
-      layoutState: info.createStateInternal(),
+      layoutState: info.createStateInternal(eventHandler),
       features: features,
+      eventHandler: eventHandler,
       registry: WindowPropertyRegistry(initialData: completedProperties),
     );
   }
@@ -55,6 +57,7 @@ class LiveWindowEntry {
   final LayoutState layoutState;
   final List<WindowFeature> features;
   final WindowPropertyRegistry registry;
+  final WindowEventHandler? eventHandler;
   bool _disposed = false;
 
   Widget? _view;
@@ -72,10 +75,12 @@ class LiveWindowEntry {
     required this.layoutState,
     required this.features,
     required this.registry,
+    this.eventHandler,
   }) : _view = MultiProvider(
           providers: [
             ChangeNotifierProvider.value(value: registry),
             ChangeNotifierProvider.value(value: layoutState),
+            Provider.value(value: eventHandler),
           ],
           child: WindowWrapper(
             features: features,
@@ -133,5 +138,21 @@ class _WindowWrapperState extends State<WindowWrapper> {
 
     return widget.features[index]
         .build(context, _buildFeatures(context, index + 1));
+  }
+}
+
+abstract class WindowEventHandler {
+  LiveWindowEntry? _entry;
+  LiveWindowEntry get entry => _entry!;
+
+  @mustCallSuper
+  void onEvent(WindowEvent event) {
+    onUnhandled(event);
+  }
+
+  void onUnhandled(WindowEvent event) {}
+
+  static maybeOf(BuildContext context) {
+    return Provider.of<WindowEventHandler?>(context, listen: false);
   }
 }
