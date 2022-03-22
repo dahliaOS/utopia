@@ -17,9 +17,3 @@ dev_dependencies:
   flutter_lints: ^1.0.0
   flutter_test:
     sdk: flutter
-
-flutter:
-  fonts:
-    - family: CustomIcons
-      fonts:
-        - asset: fonts/CustomIcons.ttf
