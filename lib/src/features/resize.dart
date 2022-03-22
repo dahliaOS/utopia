@@ -167,7 +167,13 @@ class WindowResizeGestureDetector extends StatelessWidget {
     return Stack(
       clipBehavior: Clip.none,
       children: [
-        Positioned.fill(child: child),
+        Positioned.fill(
+          left: listeners != null ? borderThickness : 0,
+          right: listeners != null ? borderThickness : 0,
+          top: listeners != null ? borderThickness : 0,
+          bottom: listeners != null ? borderThickness : 0,
+          child: child,
+        ),
         if (listeners != null) Positioned.fill(child: buildFrame(context)),
       ],
     );
