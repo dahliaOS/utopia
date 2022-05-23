@@ -4,11 +4,22 @@ import 'package:utopia_wm/src/features/base.dart';
 import 'package:utopia_wm/src/layout.dart';
 import 'package:utopia_wm/src/registry.dart';
 
+/// A [WindowFeature] that provides a background surface for the window to sit on.
+///
+/// It is possible to override the shape, the widget and the elevation of the surface.
 class SurfaceWindowFeature extends WindowFeature {
+  /// Registry key that holds the shape of the window. It is used for clipping and
+  /// shadow occluding. Defaults to [RoundedRectangleBorder].
   static const WindowPropertyKey<ShapeBorder> shape =
       WindowPropertyKey('feature.surface.shape', RoundedRectangleBorder());
+
+  /// Registry key that holds the widget that is used as surface.
+  /// Defaults to [DefaultWindowBackground].
   static const WindowPropertyKey<Widget> background = WindowPropertyKey(
       'feature.surface.background', DefaultWindowBackground());
+
+  /// Registry key that holds the amount of elevation of the surface.
+  /// Defaults to `0`.
   static const WindowPropertyKey<double> elevation =
       WindowPropertyKey('feature.surface.elevation', 0);
 
@@ -46,6 +57,10 @@ class SurfaceWindowFeature extends WindowFeature {
   List<WindowPropertyKey> get requiredProperties => [];
 }
 
+/// Default and opinionated window surface.
+/// It is just a black surface with a white border going around it.
+/// Not expected to be used in a proper window manager but exists only to have something
+/// rather than no surface by default.
 class DefaultWindowBackground extends StatelessWidget {
   const DefaultWindowBackground({Key? key}) : super(key: key);
 

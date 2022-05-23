@@ -6,11 +6,26 @@ import 'package:utopia_wm/src/features/base.dart';
 import 'package:utopia_wm/src/layout.dart';
 import 'package:utopia_wm/src/registry.dart';
 
+/// A [WindowFeature] that adds an invisible frame around the window to resize it.
+///
+/// It allows horizontal, vertical and diagonal resize. Keep in mind this feature
+/// will pad the contents of the window by 8 px in every direction, making it lose some room.
+///
+/// It supports a min and max size that will stop resizing if reached and also a way
+/// to dynamically disable the resizing functionality.
 class ResizeWindowFeature extends WindowFeature {
+  /// Registry key that holds the minimum size the window is allowed to be resized to.
+  /// Defaults to [Size.zero].
   static const WindowPropertyKey<Size> minSize =
       WindowPropertyKey<Size>('feature.resize.minSize', Size.zero);
+
+  /// Registry key that holds the maximum size the window is allowed to be resized to.
+  /// Defaults to [Size.infinite].
   static const WindowPropertyKey<Size> maxSize =
       WindowPropertyKey<Size>('feature.resize.maxSize', Size.infinite);
+
+  /// Registry key to toggle dynamically the resize frame in order to enable or disabling resizing.
+  /// Defaults to `true`.
   static const WindowPropertyKey<bool> allowResize =
       WindowPropertyKey<bool>('feature.resize.allowResize', true);
 
@@ -30,7 +45,7 @@ class ResizeWindowFeature extends WindowFeature {
       listeners: properties.resize.allowResize &&
               layout.dock == WindowDock.none &&
               !layout.fullscreen
-          ? getListeners(context)
+          ? _getListeners(context)
           : null,
       onStartResize: () => eventHandler?.onEvent(
         WindowResizeStartEvent(timestamp: DateTime.now()),
@@ -41,7 +56,7 @@ class ResizeWindowFeature extends WindowFeature {
     );
   }
 
-  Map<Alignment, GestureDragUpdateCallback> getListeners(
+  Map<Alignment, GestureDragUpdateCallback> _getListeners(
     BuildContext context,
   ) {
     return {
@@ -146,6 +161,8 @@ class ResizeWindowFeature extends WindowFeature {
   List<WindowPropertyKey> get requiredProperties => [];
 }
 
+/// The widget that builds the resizing frame for the [ResizeWindowFeature].
+/// It should not be used directly and is dedicated to internal library usage.
 class WindowResizeGestureDetector extends StatelessWidget {
   final double borderThickness;
   final Map<Alignment, GestureDragUpdateCallback>? listeners;

@@ -7,8 +7,8 @@ import 'package:utopia_wm/wm.dart';
 class Launcher extends StatelessWidget {
   static const entry = WindowEntry(
     features: [
-      ShadowWindowFeature(),
       ResizeWindowFeature(),
+      ShadowWindowFeature(),
       FocusableWindowFeature(),
       SurfaceWindowFeature(),
       ToolbarWindowFeature(),

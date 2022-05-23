@@ -6,9 +6,19 @@ import 'package:utopia_wm/src/hierarchy.dart';
 import 'package:utopia_wm/src/layout.dart';
 import 'package:utopia_wm/src/registry.dart';
 
+/// The [WindowFeature] that is responsible of drawing the toolbar where usually the title
+/// and buttons of the window live.
+///
+/// By default allows only vertically stacked toolbars to be used but it's rather simple
+/// to make a feature that is capable of adding one in an horizontal layout.
 class ToolbarWindowFeature extends WindowFeature {
+  /// Registry key that holds the vertical size of the toolbar. Defaults to `24`.
   static const WindowPropertyKey<double> size =
       WindowPropertyKey('feature.toolbar.size', 24);
+
+  /// Registry key that defines the actual widget used to render the toolbar. It is
+  /// expected to have the width of the window and height of [ToolbarWindowFeature.size].
+  /// Defaults to [DefaultToolbar].
   static const WindowPropertyKey<Widget> widget =
       WindowPropertyKey('feature.toolbar.widget', DefaultToolbar());
 
@@ -37,6 +47,14 @@ class ToolbarWindowFeature extends WindowFeature {
   List<WindowPropertyKey> get requiredProperties => [];
 }
 
+/// The default and opinionated implementation of the window toolbar.
+/// It follows the white on black design inspired by the default DE of fuchsia.
+///
+/// It displays the icon if available, the title and the three buttons to minimize,
+/// maximize and close the window.
+///
+/// This widget is not expected to be used in a proper wm but rather serves as an
+/// example of how a toolbar should be implemented.
 class DefaultToolbar extends StatelessWidget {
   const DefaultToolbar({Key? key}) : super(key: key);
 
@@ -113,7 +131,7 @@ class DefaultToolbar extends StatelessWidget {
               onTap: () {
                 layout.minimized = true;
                 eventHandler?.onEvent(
-                  WindowMinimizeButtonPressEvent(DateTime.now()),
+                  WindowMinimizeButtonPressEvent(timestamp: DateTime.now()),
                 );
               },
               child: SizedBox.fromSize(
@@ -140,7 +158,7 @@ class DefaultToolbar extends StatelessWidget {
                   layout.dock = WindowDock.maximized;
                 }
                 eventHandler?.onEvent(
-                  WindowMaximizeButtonPressEvent(DateTime.now()),
+                  WindowMaximizeButtonPressEvent(timestamp: DateTime.now()),
                 );
               },
               child: SizedBox.fromSize(
@@ -162,7 +180,7 @@ class DefaultToolbar extends StatelessWidget {
             InkWell(
               onTap: () {
                 eventHandler?.onEvent(
-                  WindowCloseButtonPressEvent(DateTime.now()),
+                  WindowCloseButtonPressEvent(timestamp: DateTime.now()),
                 );
                 WindowHierarchy.of(context, listen: false)
                     .removeWindowEntry(properties.info.id);

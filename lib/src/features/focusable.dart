@@ -4,7 +4,10 @@ import 'package:utopia_wm/src/registry.dart';
 
 import 'base.dart';
 
+/// [WindowFeature] to make the window get focus if it gets clicked/tapped.
 class FocusableWindowFeature extends WindowFeature {
+  /// Registry key to check if the window can actually request the window
+  /// focus when it gets interacted with. Defaults to `true`.
   static const WindowPropertyKey<bool> canRequest =
       WindowPropertyKey('features.focusable.canRequest', true);
 

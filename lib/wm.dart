@@ -1,3 +1,7 @@
+/// A flexible library that allows to create window managers using flutter.
+///
+/// Every window and the manager itself is a widget that can be customized to extreme
+/// extents using the builtin classes and methods of the library.
 library utopia_wm;
 
 export 'package:utopia_wm/src/entry.dart';
