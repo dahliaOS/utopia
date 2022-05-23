@@ -105,7 +105,7 @@ class WindowPropertyKey<T> {
   }
 }
 
-/// Exposes a strongly typed api for the common properties that can be accessed from the registry.
+/// Exposes a strongly typed API for the common properties that can be accessed from the registry.
 /// Everything can be accessed even if the associated feature is not used by the window.
 /// In that case, null will be returned for any property of the missing feature.
 extension RegistryUtils on WindowPropertyRegistry {

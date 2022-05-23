@@ -7,7 +7,7 @@ import 'package:uuid/uuid.dart';
 
 import 'registry.dart';
 
-/// Base class for any window inside the wm itself.
+/// Base class for any window inside the WM itself.
 ///
 /// Every property is considered "dry" along with the class instance itself, as such
 /// it is possible to have completely constant entries.
@@ -16,7 +16,7 @@ import 'registry.dart';
 /// to create new windows using the [newInstance] method. This allows you to get an instance
 /// of the associated [LiveWindowEntry].
 class WindowEntry {
-  /// Registry key for the window id. This identifier should be unique across the wm
+  /// Registry key for the window id. This identifier should be unique across the WM
   /// and as such it is suggested to not define it manually.
   static const WindowPropertyKey<String?> id =
       WindowPropertyKey('window.id', null, readonly: true);
@@ -31,7 +31,7 @@ class WindowEntry {
       WindowPropertyKey('window.icon', null);
 
   /// Registry key for whether to show the window on the taskbar or not. The only
-  /// effect it has on the wm itself is to be a discriminant for returning window
+  /// effect it has on the WM itself is to be a discriminant for returning window
   /// entries on particular getters.
   static const WindowPropertyKey<bool> showOnTaskbar =
       WindowPropertyKey('window.showOnTaskbar', true);
@@ -99,11 +99,11 @@ class WindowEntry {
 
 /// Active representation of a [WindowEntry] instance.
 ///
-/// It can't be directly instantiated but must created using the [WindowEntry.newInstance]
+/// It can't be directly instantiated but must be created using the [WindowEntry.newInstance]
 /// method.
 ///
 /// The [layoutState] field contains a mutable representation of the window layout.
-/// It possible to get the final window view by accessing the [view] getter.
+/// It's possible to get the final window view by accessing the [view] getter.
 ///
 /// This view provides access to the window [WindowPropertyRegistry], [LayoutState] and [WindowEventHandler]
 /// through different providers.
@@ -173,7 +173,7 @@ class LiveWindowEntry {
         );
 
   /// Dispose the created view and invalidate the entry.
-  /// It is not recommended to call this method directly as the wm itself will handle
+  /// It is not recommended to call this method directly as the WM itself will handle
   /// disposal when needed.
   void dispose() {
     _view = null;
@@ -254,7 +254,7 @@ abstract class WindowEventHandler {
   /// by the [onEvent] method.
   void onUnhandled(WindowEvent event) {}
 
-  /// Obtain if present the current [WindowEventHandler] associated with the [LiveWindowEntry]
+  /// Obtain the [WindowEventHandler] associated with the [LiveWindowEntry] if present.
   static WindowEventHandler? maybeOf(BuildContext context) {
     return Provider.of<WindowEventHandler?>(context, listen: false);
   }

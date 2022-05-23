@@ -4,7 +4,7 @@ import 'package:utopia_wm/src/registry.dart';
 
 import 'entry.dart';
 
-/// Base class for the properties api for the registry.
+/// Base class for the properties API for the registry.
 ///
 /// For now it is supposed to be internally used by the lib, as such it doesn't support
 /// being implemented, extended or mixed-in.
@@ -14,7 +14,7 @@ abstract class WindowPropertiesBase {
   const WindowPropertiesBase._new(this._registry);
 }
 
-/// Class that maps the keys from [WindowEntry] using the [WindowPropertiesBase] api.
+/// Class that maps the keys from [WindowEntry] using the [WindowPropertiesBase] API.
 class InfoWindowProperties extends WindowPropertiesBase {
   const InfoWindowProperties.mapFrom(WindowPropertyRegistry registry)
       : super._new(registry);
@@ -28,7 +28,7 @@ class InfoWindowProperties extends WindowPropertiesBase {
   /// Returns the current icon of the window if available.
   ImageProvider? get icon => _registry.get(WindowEntry.icon);
 
-  /// Returns whether the window is expected to appear inside the wm taskbar.
+  /// Returns whether the window is expected to appear inside the WM taskbar.
   bool get showOnTaskbar => _registry.get(WindowEntry.showOnTaskbar);
 
   /// Sets the window title to the provided [value]. This string could be seen by the user.
@@ -37,12 +37,12 @@ class InfoWindowProperties extends WindowPropertiesBase {
   /// Sets the window icon to the provided [value]. This icon could be seen by the user.
   set icon(ImageProvider? value) => _registry.set(WindowEntry.icon, value);
 
-  /// Sets whether the window is expected to appear inside the wm taskbar.
+  /// Sets whether the window is expected to appear inside the WM taskbar.
   set showOnTaskbar(bool value) =>
       _registry.set(WindowEntry.showOnTaskbar, value);
 }
 
-/// Class that maps the keys from [SurfaceWindowFeature] using the [WindowPropertiesBase] api.
+/// Class that maps the keys from [SurfaceWindowFeature] using the [WindowPropertiesBase] API.
 class SurfaceWindowProperties extends WindowPropertiesBase {
   const SurfaceWindowProperties.mapFrom(WindowPropertyRegistry registry)
       : super._new(registry);
@@ -69,7 +69,7 @@ class SurfaceWindowProperties extends WindowPropertiesBase {
       _registry.set(SurfaceWindowFeature.elevation, value);
 }
 
-/// Class that maps the keys from [ResizeWindowFeature] using the [WindowPropertiesBase] api.
+/// Class that maps the keys from [ResizeWindowFeature] using the [WindowPropertiesBase] API.
 class ResizeWindowProperties extends WindowPropertiesBase {
   const ResizeWindowProperties.mapFrom(WindowPropertyRegistry registry)
       : super._new(registry);
@@ -94,7 +94,7 @@ class ResizeWindowProperties extends WindowPropertiesBase {
       _registry.set(ResizeWindowFeature.allowResize, value);
 }
 
-/// Class that maps the keys from [ToolbarWindowFeature] using the [WindowPropertiesBase] api.
+/// Class that maps the keys from [ToolbarWindowFeature] using the [WindowPropertiesBase] API.
 class ToolbarWindowProperties extends WindowPropertiesBase {
   const ToolbarWindowProperties.mapFrom(WindowPropertyRegistry registry)
       : super._new(registry);
@@ -112,7 +112,7 @@ class ToolbarWindowProperties extends WindowPropertiesBase {
   set widget(Widget value) => _registry.set(ToolbarWindowFeature.widget, value);
 }
 
-/// Class that maps the keys from [FocusableWindowFeature] using the [WindowPropertiesBase] api.
+/// Class that maps the keys from [FocusableWindowFeature] using the [WindowPropertiesBase] API.
 class FocusableWindowProperties extends WindowPropertiesBase {
   const FocusableWindowProperties.mapFrom(WindowPropertyRegistry registry)
       : super._new(registry);

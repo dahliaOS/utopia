@@ -48,12 +48,12 @@ class ToolbarWindowFeature extends WindowFeature {
 }
 
 /// The default and opinionated implementation of the window toolbar.
-/// It follows the white on black design inspired by the default DE of fuchsia.
+/// It follows the white on black design inspired by the default DE of Fuchsia.
 ///
 /// It displays the icon if available, the title and the three buttons to minimize,
 /// maximize and close the window.
 ///
-/// This widget is not expected to be used in a proper wm but rather serves as an
+/// This widget is not expected to be used in a proper WM but rather serves as an
 /// example of how a toolbar should be implemented.
 class DefaultToolbar extends StatelessWidget {
   const DefaultToolbar({Key? key}) : super(key: key);

@@ -1,4 +1,4 @@
-/// A flexible library that allows to create window managers using flutter.
+/// A flexible library that allows to create window managers using Flutter.
 ///
 /// Every window and the manager itself is a widget that can be customized to extreme
 /// extents using the builtin classes and methods of the library.

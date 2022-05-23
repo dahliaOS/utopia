@@ -8,8 +8,8 @@ import 'registry.dart';
 /// The class that is responsible of actually building the windows using the provided [layoutDelegate].
 ///
 /// It needs a [WindowHierarchyController], an object that contains the current
-/// state of the window manager and provides a way to interact with the wm from outside,
-/// and a [LayoutDelegate], the class responsible of laying out the windows the wm contains.
+/// state of the window manager and provides a way to interact with the WM from outside,
+/// and a [LayoutDelegate], the class responsible of laying out the windows the WM contains.
 class WindowHierarchy extends StatelessWidget {
   final WindowHierarchyController controller;
   final LayoutDelegate layoutDelegate;
@@ -135,7 +135,7 @@ class _LayoutBuilderState extends State<_LayoutBuilder> {
 /// The heart of the [WindowHierarchy].
 ///
 /// This class is responsible of holding the actual state and status of the windows and of the
-/// wm itself.
+/// WM itself.
 ///
 /// It contains the current window [entries], the [focusHierarchy] that dictates the order
 /// the windows should be rendered and the [wmInsets] that define areas that should not be
@@ -208,7 +208,7 @@ class WindowHierarchyController with ChangeNotifier {
     _state._requestRebuild();
   }
 
-  /// The insets of the wm that define areas that should not be
+  /// The insets of the WM that define areas that should not be
   /// occluded by windows for stuff like system overlays and such.
   EdgeInsets get wmInsets => _wmInsets;
   set wmInsets(EdgeInsets value) {
