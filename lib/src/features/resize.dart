@@ -40,7 +40,6 @@ class ResizeWindowFeature extends WindowFeature {
         WindowEventHandler.maybeOf(context);
 
     return WindowResizeGestureDetector(
-      child: content,
       borderThickness: 8,
       listeners: properties.resize.allowResize &&
               layout.dock == WindowDock.none &&
@@ -53,6 +52,7 @@ class ResizeWindowFeature extends WindowFeature {
       onEndResize: () => eventHandler?.onEvent(
         WindowResizeEndEvent(timestamp: DateTime.now()),
       ),
+      child: content,
     );
   }
 
@@ -88,7 +88,7 @@ class ResizeWindowFeature extends WindowFeature {
     bool bottom = false,
   }) {
     double _value(bool apply, Axis axis, double elseValue) {
-      double d = axis == Axis.horizontal
+      final double d = axis == Axis.horizontal
           ? details.globalPosition.dx
           : details.globalPosition.dy;
       return apply ? d : elseValue;

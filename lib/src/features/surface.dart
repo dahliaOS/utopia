@@ -16,7 +16,9 @@ class SurfaceWindowFeature extends WindowFeature {
   /// Registry key that holds the widget that is used as surface.
   /// Defaults to [DefaultWindowBackground].
   static const WindowPropertyKey<Widget> background = WindowPropertyKey(
-      'feature.surface.background', DefaultWindowBackground());
+    'feature.surface.background',
+    DefaultWindowBackground(),
+  );
 
   /// Registry key that holds the amount of elevation of the surface.
   /// Defaults to `0`.
@@ -41,7 +43,6 @@ class SurfaceWindowFeature extends WindowFeature {
       elevation: properties.surface.elevation,
       child: ClipPath(
         clipper: ShapeBorderClipper(shape: shape),
-        clipBehavior: Clip.antiAlias,
         child: Stack(
           fit: StackFit.passthrough,
           children: [
@@ -70,7 +71,6 @@ class DefaultWindowBackground extends StatelessWidget {
       decoration: BoxDecoration(
         color: Colors.black,
         border: Border.all(
-          width: 1,
           color: Colors.white,
         ),
       ),
@@ -98,7 +98,9 @@ class _ShadowOccluder extends SingleChildRenderObjectWidget {
 
   @override
   void updateRenderObject(
-      BuildContext context, _ShadowOccluderRenderBox renderObject) {
+    BuildContext context,
+    _ShadowOccluderRenderBox renderObject,
+  ) {
     renderObject
       ..elevation = elevation
       ..shape = shape;
@@ -138,11 +140,13 @@ class _ShadowOccluderRenderBox extends RenderProxyBox {
     final _shapePath = shape.getOuterPath(_baseRect);
 
     context.canvas.save();
-    context.canvas.clipPath(Path.combine(
-      PathOperation.difference,
-      Path()..addRect(_baseRect.inflate(256)),
-      _shapePath,
-    ));
+    context.canvas.clipPath(
+      Path.combine(
+        PathOperation.difference,
+        Path()..addRect(_baseRect.inflate(256)),
+        _shapePath,
+      ),
+    );
     context.canvas.drawShadow(_shapePath, Colors.black, elevation, true);
     context.canvas.restore();
     context.paintChild(child!, position);

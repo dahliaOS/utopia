@@ -82,8 +82,10 @@ class WindowEntry {
         Map.of(properties)
           ..addAll(overrideProperties)
           ..putIfAbsent(id, () => const Uuid().v4());
-    assert(completedProperties.containsKey(id) &&
-        completedProperties.containsKey(title));
+    assert(
+      completedProperties.containsKey(id) &&
+          completedProperties.containsKey(title),
+    );
 
     final LayoutInfo info = overrideLayout?.call(layoutInfo) ?? layoutInfo;
 
@@ -164,12 +166,12 @@ class LiveWindowEntry {
             ChangeNotifierProvider.value(value: layoutState),
             Provider.value(value: eventHandler),
           ],
+          key: GlobalKey(),
           child: WindowWrapper(
             features: features,
             content: content,
             key: ValueKey(registry.info.id),
           ),
-          key: GlobalKey(),
         );
 
   /// Dispose the created view and invalidate the entry.
@@ -203,11 +205,11 @@ class _WindowWrapperState extends State<WindowWrapper> {
   void initState() {
     super.initState();
 
-    final registry = WindowPropertyRegistry.of(context, listen: false);
-    for (WindowFeature feature in widget.features) {
-      for (WindowPropertyKey property in feature.requiredProperties) {
-        bool contains = registry.hasProperty(property);
-        if (!contains) {
+    final WindowPropertyRegistry registry =
+        WindowPropertyRegistry.of(context, listen: false);
+    for (final WindowFeature feature in widget.features) {
+      for (final WindowPropertyKey property in feature.requiredProperties) {
+        if (!registry.hasProperty(property)) {
           throw Exception(
             'The required property ${property.name} was not found for the feature ${feature.runtimeType}',
           );
@@ -235,10 +237,10 @@ class _WindowWrapperState extends State<WindowWrapper> {
 /// method or by mixing in the various event helpers provided by the lib, like
 /// [ResizeEvents] or [LayoutEvents].
 abstract class WindowEventHandler {
-  LiveWindowEntry? _entry;
+  late LiveWindowEntry _entry;
 
   /// The entry this event handler is associated with.
-  LiveWindowEntry get entry => _entry!;
+  LiveWindowEntry get entry => _entry;
 
   /// Overriding this method allows to receive and react to an event.
   /// In order to react you just return the handler.

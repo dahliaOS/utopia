@@ -71,7 +71,6 @@ class DefaultToolbar extends StatelessWidget {
       decoration: BoxDecoration(
         color: Colors.black,
         border: Border.all(
-          width: 1,
           color: Colors.white,
         ),
       ),
@@ -84,8 +83,6 @@ class DefaultToolbar extends StatelessWidget {
                 children: [
                   SizedBox.expand(
                     child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      mainAxisSize: MainAxisSize.max,
                       children: [
                         const SizedBox(width: 4),
                         Expanded(

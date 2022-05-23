@@ -158,10 +158,10 @@ abstract class LayoutState<T extends LayoutInfo> extends ChangeNotifier {
     return Provider.of<LayoutState<T>>(context, listen: listen);
   }
 
-  T? _info;
+  late T _info;
 
   /// The associated [LayoutInfo] object.
-  T get info => _info!;
+  T get info => _info;
 
   /// An optional [WindowEventHandler] to notify an eventual listener of layout changes through events.
   WindowEventHandler? _eventHandler;
@@ -203,10 +203,12 @@ abstract class LayoutState<T extends LayoutInfo> extends ChangeNotifier {
   /// Generates a [WindowSizeChangeEvent] event.
   set size(Size value) {
     _size = value;
-    _eventHandler?.onEvent(WindowSizeChangeEvent(
-      size: value,
-      timestamp: DateTime.now(),
-    ));
+    _eventHandler?.onEvent(
+      WindowSizeChangeEvent(
+        size: value,
+        timestamp: DateTime.now(),
+      ),
+    );
     notifyListeners();
   }
 
@@ -215,10 +217,12 @@ abstract class LayoutState<T extends LayoutInfo> extends ChangeNotifier {
   /// Generates a [WindowPositionChangeEvent] event.
   set position(Offset value) {
     _position = value;
-    _eventHandler?.onEvent(WindowPositionChangeEvent(
-      position: value,
-      timestamp: DateTime.now(),
-    ));
+    _eventHandler?.onEvent(
+      WindowPositionChangeEvent(
+        position: value,
+        timestamp: DateTime.now(),
+      ),
+    );
     notifyListeners();
   }
 
@@ -227,18 +231,22 @@ abstract class LayoutState<T extends LayoutInfo> extends ChangeNotifier {
   /// Generates a [WindowPositionChangeEvent] event and [WindowSizeChangeEvent] event.
   set rect(Rect value) {
     if (_position != value.topLeft) {
-      _eventHandler?.onEvent(WindowPositionChangeEvent(
-        position: value.topLeft,
-        timestamp: DateTime.now(),
-      ));
+      _eventHandler?.onEvent(
+        WindowPositionChangeEvent(
+          position: value.topLeft,
+          timestamp: DateTime.now(),
+        ),
+      );
     }
     _position = value.topLeft;
 
     if (_size != value.size) {
-      _eventHandler?.onEvent(WindowSizeChangeEvent(
-        size: value.size,
-        timestamp: DateTime.now(),
-      ));
+      _eventHandler?.onEvent(
+        WindowSizeChangeEvent(
+          size: value.size,
+          timestamp: DateTime.now(),
+        ),
+      );
     }
     _size = value.size;
 
@@ -250,10 +258,12 @@ abstract class LayoutState<T extends LayoutInfo> extends ChangeNotifier {
   /// Generates a [WindowAlwaysOnTopChangeEvent] event.
   set alwaysOnTop(bool value) {
     _alwaysOnTop = value;
-    _eventHandler?.onEvent(WindowAlwaysOnTopChangeEvent(
-      alwaysOnTop: value,
-      timestamp: DateTime.now(),
-    ));
+    _eventHandler?.onEvent(
+      WindowAlwaysOnTopChangeEvent(
+        alwaysOnTop: value,
+        timestamp: DateTime.now(),
+      ),
+    );
     notifyListeners();
   }
 
@@ -263,10 +273,12 @@ abstract class LayoutState<T extends LayoutInfo> extends ChangeNotifier {
   /// Generates a [WindowAlwaysOnTopModeChangeEvent] event.
   set alwaysOnTopMode(AlwaysOnTopMode value) {
     _alwaysOnTopMode = value;
-    _eventHandler?.onEvent(WindowAlwaysOnTopModeChangeEvent(
-      alwaysOnTopMode: value,
-      timestamp: DateTime.now(),
-    ));
+    _eventHandler?.onEvent(
+      WindowAlwaysOnTopModeChangeEvent(
+        alwaysOnTopMode: value,
+        timestamp: DateTime.now(),
+      ),
+    );
     notifyListeners();
   }
 
@@ -275,10 +287,12 @@ abstract class LayoutState<T extends LayoutInfo> extends ChangeNotifier {
   /// Generates a [WindowDockChangeEvent] event.
   set dock(WindowDock value) {
     _dock = value;
-    _eventHandler?.onEvent(WindowDockChangeEvent(
-      dock: value,
-      timestamp: DateTime.now(),
-    ));
+    _eventHandler?.onEvent(
+      WindowDockChangeEvent(
+        dock: value,
+        timestamp: DateTime.now(),
+      ),
+    );
     notifyListeners();
   }
 
@@ -287,10 +301,12 @@ abstract class LayoutState<T extends LayoutInfo> extends ChangeNotifier {
   /// Generates a [WindowMinimizeEvent] event.
   set minimized(bool value) {
     _minimized = value;
-    _eventHandler?.onEvent(WindowMinimizeEvent(
-      minimized: value,
-      timestamp: DateTime.now(),
-    ));
+    _eventHandler?.onEvent(
+      WindowMinimizeEvent(
+        minimized: value,
+        timestamp: DateTime.now(),
+      ),
+    );
     notifyListeners();
   }
 
@@ -299,10 +315,12 @@ abstract class LayoutState<T extends LayoutInfo> extends ChangeNotifier {
   /// Generates a [WindowFullscreenEvent] event.
   set fullscreen(bool value) {
     _fullscreen = value;
-    _eventHandler?.onEvent(WindowFullscreenEvent(
-      fullscreen: value,
-      timestamp: DateTime.now(),
-    ));
+    _eventHandler?.onEvent(
+      WindowFullscreenEvent(
+        fullscreen: value,
+        timestamp: DateTime.now(),
+      ),
+    );
     notifyListeners();
   }
 }
@@ -368,10 +386,10 @@ class FreeformLayoutDelegate extends LayoutDelegate<FreeformLayoutInfo> {
     List<String> focusHierarchy,
   ) {
     return Stack(
+      clipBehavior: Clip.none,
       children: WindowEntryUtils.getEntriesByFocus(entries, focusHierarchy)
           .map((e) => _buildWindow(context, e))
           .toList(),
-      clipBehavior: Clip.none,
     );
   }
 

@@ -22,13 +22,15 @@ class WindowHierarchy extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return LayoutBuilder(builder: (context, constraints) {
-      return _WindowHierarchyInternal(
-        controller: controller,
-        layoutDelegate: layoutDelegate,
-        size: constraints.biggest,
-      );
-    });
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        return _WindowHierarchyInternal(
+          controller: controller,
+          layoutDelegate: layoutDelegate,
+          size: constraints.biggest,
+        );
+      },
+    );
   }
 
   /// Obtain the current [WindowHierarchyController] exposed by this widget via a provider.
