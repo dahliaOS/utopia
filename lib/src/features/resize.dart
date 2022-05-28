@@ -156,9 +156,6 @@ class ResizeWindowFeature extends WindowFeature {
 
     layout.rect = Rect.fromLTRB(newLeft, newTop, newRight, newBottom);
   }
-
-  @override
-  List<WindowPropertyKey> get requiredProperties => [];
 }
 
 /// The widget that builds the resizing frame for the [ResizeWindowFeature].

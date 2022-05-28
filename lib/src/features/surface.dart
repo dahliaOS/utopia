@@ -53,9 +53,6 @@ class SurfaceWindowFeature extends WindowFeature {
       ),
     );
   }
-
-  @override
-  List<WindowPropertyKey> get requiredProperties => [];
 }
 
 /// Default and opinionated window surface.

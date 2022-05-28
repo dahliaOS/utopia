@@ -292,7 +292,9 @@ class WallpaperWindowFeature extends WindowFeature {
   }
 
   @override
-  List<WindowPropertyKey> get requiredProperties => [image];
+  Set<WindowPropertyKey> get requiredProperties => {
+        WallpaperWindowFeature.image,
+      };
 }
 
 class FreeDragWindowFeature extends WindowFeature {
@@ -312,9 +314,6 @@ class FreeDragWindowFeature extends WindowFeature {
       ),
     );
   }
-
-  @override
-  List<WindowPropertyKey> get requiredProperties => [];
 }
 
 class ClockWidget extends StatefulWidget {

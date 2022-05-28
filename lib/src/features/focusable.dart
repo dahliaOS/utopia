@@ -29,7 +29,4 @@ class FocusableWindowFeature extends WindowFeature {
       child: content,
     );
   }
-
-  @override
-  List<WindowPropertyKey> get requiredProperties => [];
 }

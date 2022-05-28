@@ -33,5 +33,5 @@ abstract class WindowFeature {
   /// A list of properties required to be present in the registry in order for the feature to
   /// work properly. If any of these is absent the [WindowWrapper] building the features
   /// will throw an Exception.
-  List<WindowPropertyKey> get requiredProperties;
+  Set<WindowPropertyKey> get requiredProperties => {};
 }

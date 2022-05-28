@@ -11,25 +11,43 @@ import 'registry.dart';
 /// state of the window manager and provides a way to interact with the WM from outside,
 /// and a [LayoutDelegate], the class responsible of laying out the windows the WM contains.
 class WindowHierarchy extends StatelessWidget {
+  /// An object to communicate with the [WindowHierarchy]. Can also be obtained
+  /// using context with the [WindowHierarchy.of] method.
   final WindowHierarchyController controller;
+
+  /// The [LayoutDelegate] that builds the windows and lays them out.
   final LayoutDelegate layoutDelegate;
+
+  /// Whether to use the parent widget size to provide the [controller.displayBounds].
+  /// If `false`, the [controller.displayBounds] will always return a [Rect] with
+  /// size [MediaQueryData.size]. Defaults to `false`.
+  ///
+  /// Note: Because of the way this works, if set to `true` [controller.displayBounds]
+  /// will report the correct widget size only from the second frame.
+  /// Consider this if you need to use the wm size as measurements will be delayed.
+  final bool useParentSize;
 
   const WindowHierarchy({
     required this.controller,
     required this.layoutDelegate,
+    this.useParentSize = false,
     Key? key,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    if (!useParentSize) return _buildChild(MediaQuery.of(context).size);
+
     return LayoutBuilder(
-      builder: (context, constraints) {
-        return _WindowHierarchyInternal(
-          controller: controller,
-          layoutDelegate: layoutDelegate,
-          size: constraints.biggest,
-        );
-      },
+      builder: (context, constraints) => _buildChild(constraints.biggest),
+    );
+  }
+
+  Widget _buildChild(Size size) {
+    return _WindowHierarchyInternal(
+      controller: controller,
+      layoutDelegate: layoutDelegate,
+      size: size,
     );
   }
 

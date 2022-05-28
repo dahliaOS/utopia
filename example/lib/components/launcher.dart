@@ -100,7 +100,7 @@ class Launcher extends StatelessWidget {
           listen: false,
         ).addWindowEntry(entry.newInstance(
           content: const ExampleApp(),
-          eventHandler: LogWindowEventHandler(),
+          //eventHandler: LogWindowEventHandler(),
         ));
 
         Provider.of<ShellDirectorState>(
@@ -129,9 +129,6 @@ class ShadowWindowFeature extends WindowFeature {
       child: content,
     );
   }
-
-  @override
-  List<WindowPropertyKey> get requiredProperties => [];
 }
 
 class PaddedContentWindowFeature extends WindowFeature {
@@ -148,9 +145,6 @@ class PaddedContentWindowFeature extends WindowFeature {
       child: content,
     );
   }
-
-  @override
-  List<WindowPropertyKey> get requiredProperties => [];
 }
 
 class LogWindowEventHandler extends WindowEventHandler {

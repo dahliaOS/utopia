@@ -42,9 +42,6 @@ class ToolbarWindowFeature extends WindowFeature {
       ],
     );
   }
-
-  @override
-  List<WindowPropertyKey> get requiredProperties => [];
 }
 
 /// The default and opinionated implementation of the window toolbar.
