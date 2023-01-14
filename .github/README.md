@@ -6,6 +6,7 @@
 <a href="https://docs.dahliaos.io">Documentation</a>
 
 # Utopia Window Manager
+![Alt text](example-screenshot.png "Optional title")
 ![GitHub](https://img.shields.io/github/license/dahliaos/utopia?color=brighgreen)
 ![GitHub issues](https://img.shields.io/github/issues/dahliaos/utopia?color=brightgreen)
 
