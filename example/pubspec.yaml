@@ -17,6 +17,7 @@ dependencies:
   provider: ^6.0.0
   intl: ^0.17.0
   collection: ^1.17.0
+  expressions: ^0.2.5
 
 dev_dependencies:
   flutter_test:
