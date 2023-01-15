@@ -113,6 +113,11 @@ class Launcher extends StatelessWidget {
   }
 }
 
+class AppEntry {
+  
+
+}
+
 class ShadowWindowFeature extends WindowFeature {
   const ShadowWindowFeature();
 
