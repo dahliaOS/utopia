@@ -31,7 +31,7 @@ class MyApp extends StatelessWidget {
           style: OutlinedButton.styleFrom(
             padding: const EdgeInsets.all(8),
             minimumSize: const Size(0, 40),
-            onSurface: Colors.white,
+            disabledForegroundColor: Colors.white,
             side: const BorderSide(color: Colors.white),
           ),
         ),
@@ -45,7 +45,7 @@ class MyHomePage extends StatefulWidget {
   const MyHomePage({Key? key}) : super(key: key);
 
   @override
-  _MyHomePageState createState() => _MyHomePageState();
+  State<MyHomePage> createState() => _MyHomePageState();
 }
 
 class _MyHomePageState extends State<MyHomePage> {
@@ -322,7 +322,7 @@ class ClockWidget extends StatefulWidget {
   const ClockWidget({required this.globalSize, Key? key}) : super(key: key);
 
   @override
-  _ClockWidgetState createState() => _ClockWidgetState();
+  State<ClockWidget> createState() => _ClockWidgetState();
 }
 
 class _ClockWidgetState extends State<ClockWidget> {

@@ -193,8 +193,8 @@ class WindowWrapper extends StatefulWidget {
   const WindowWrapper({
     required this.features,
     required this.content,
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
   _WindowWrapperState createState() => _WindowWrapperState();

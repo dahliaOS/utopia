@@ -24,7 +24,7 @@ class MyHomePage extends StatefulWidget {
   const MyHomePage({Key? key}) : super(key: key);
 
   @override
-  _MyHomePageState createState() => _MyHomePageState();
+  State<MyHomePage> createState() => _MyHomePageState();
 }
 
 class _MyHomePageState extends State<MyHomePage> {
@@ -54,7 +54,7 @@ class _MyHomePageState extends State<MyHomePage> {
             Text(MediaQuery.of(context).padding.toString()),
             Text(
               '$_counter',
-              style: Theme.of(context).textTheme.headline4,
+              style: Theme.of(context).textTheme.headlineMedium,
             ),
             TextButton(
               child: const Text("Toggle resize ability"),

@@ -60,7 +60,7 @@ class SurfaceWindowFeature extends WindowFeature {
 /// Not expected to be used in a proper window manager but exists only to have something
 /// rather than no surface by default.
 class DefaultWindowBackground extends StatelessWidget {
-  const DefaultWindowBackground({Key? key}) : super(key: key);
+  const DefaultWindowBackground({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -133,18 +133,18 @@ class _ShadowOccluderRenderBox extends RenderProxyBox {
 
   @override
   void paint(PaintingContext context, Offset position) {
-    final _baseRect = position & size;
-    final _shapePath = shape.getOuterPath(_baseRect);
+    final baseRect = position & size;
+    final shapePath = shape.getOuterPath(baseRect);
 
     context.canvas.save();
     context.canvas.clipPath(
       Path.combine(
         PathOperation.difference,
-        Path()..addRect(_baseRect.inflate(256)),
-        _shapePath,
+        Path()..addRect(baseRect.inflate(256)),
+        shapePath,
       ),
     );
-    context.canvas.drawShadow(_shapePath, Colors.black, elevation, true);
+    context.canvas.drawShadow(shapePath, Colors.black, elevation, true);
     context.canvas.restore();
     context.paintChild(child!, position);
   }

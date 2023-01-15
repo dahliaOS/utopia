@@ -1,5 +1,6 @@
 import 'package:example/example.dart';
 import 'package:example/shell.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:utopia_wm/wm.dart';
@@ -150,7 +151,8 @@ class PaddedContentWindowFeature extends WindowFeature {
 class LogWindowEventHandler extends WindowEventHandler {
   @override
   void onEvent(WindowEvent event) {
-    print(event);
+    if (kDebugMode) print(event);
+
     super.onEvent(event);
   }
 }
