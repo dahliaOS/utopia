@@ -16,8 +16,7 @@ abstract class WindowPropertiesBase {
 
 /// Class that maps the keys from [WindowEntry] using the [WindowPropertiesBase] API.
 class InfoWindowProperties extends WindowPropertiesBase {
-  const InfoWindowProperties.mapFrom(WindowPropertyRegistry registry)
-      : super._new(registry);
+  const InfoWindowProperties.mapFrom(super.registry) : super._new();
 
   /// Returns the identifier of the window.
   String get id => _registry.get(WindowEntry.id)!;
@@ -44,8 +43,7 @@ class InfoWindowProperties extends WindowPropertiesBase {
 
 /// Class that maps the keys from [SurfaceWindowFeature] using the [WindowPropertiesBase] API.
 class SurfaceWindowProperties extends WindowPropertiesBase {
-  const SurfaceWindowProperties.mapFrom(WindowPropertyRegistry registry)
-      : super._new(registry);
+  const SurfaceWindowProperties.mapFrom(super.registry) : super._new();
 
   /// Returns the shape of the surface of the window. Used for clipping and shadow occlusion.
   ShapeBorder get shape => _registry.get(SurfaceWindowFeature.shape);
@@ -71,8 +69,7 @@ class SurfaceWindowProperties extends WindowPropertiesBase {
 
 /// Class that maps the keys from [ResizeWindowFeature] using the [WindowPropertiesBase] API.
 class ResizeWindowProperties extends WindowPropertiesBase {
-  const ResizeWindowProperties.mapFrom(WindowPropertyRegistry registry)
-      : super._new(registry);
+  const ResizeWindowProperties.mapFrom(super.registry) : super._new();
 
   /// Returns the minimum size the window is allowed to be resized to.
   Size get minSize => _registry.get(ResizeWindowFeature.minSize);
@@ -96,8 +93,7 @@ class ResizeWindowProperties extends WindowPropertiesBase {
 
 /// Class that maps the keys from [ToolbarWindowFeature] using the [WindowPropertiesBase] API.
 class ToolbarWindowProperties extends WindowPropertiesBase {
-  const ToolbarWindowProperties.mapFrom(WindowPropertyRegistry registry)
-      : super._new(registry);
+  const ToolbarWindowProperties.mapFrom(super.registry) : super._new();
 
   /// Returns the current vertical size of the toolbar.
   double get size => _registry.get(ToolbarWindowFeature.size);
@@ -114,8 +110,7 @@ class ToolbarWindowProperties extends WindowPropertiesBase {
 
 /// Class that maps the keys from [FocusableWindowFeature] using the [WindowPropertiesBase] API.
 class FocusableWindowProperties extends WindowPropertiesBase {
-  const FocusableWindowProperties.mapFrom(WindowPropertyRegistry registry)
-      : super._new(registry);
+  const FocusableWindowProperties.mapFrom(super.registry) : super._new();
 
   /// Returns whether the window can actually request the window focus when it gets interacted with.
   bool get canRequest => _registry.get(FocusableWindowFeature.canRequest);

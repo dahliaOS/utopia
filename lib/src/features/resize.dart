@@ -80,14 +80,14 @@ class ResizeWindowFeature extends WindowFeature {
   }
 
   void _onPanUpdate(
-    final BuildContext context,
-    final DragUpdateDetails details, {
+    BuildContext context,
+    DragUpdateDetails details, {
     bool left = false,
     bool top = false,
     bool right = false,
     bool bottom = false,
   }) {
-    double _value(bool apply, Axis axis, double elseValue) {
+    double getValue(bool apply, Axis axis, double elseValue) {
       final double d = axis == Axis.horizontal
           ? details.globalPosition.dx
           : details.globalPosition.dy;
@@ -98,22 +98,22 @@ class ResizeWindowFeature extends WindowFeature {
         WindowPropertyRegistry.of(context, listen: false);
     final LayoutState layout = LayoutState.of(context, listen: false);
 
-    double newLeft = _value(
+    double newLeft = getValue(
       left,
       Axis.horizontal,
       layout.rect.left,
     );
-    double newTop = _value(
+    double newTop = getValue(
       top,
       Axis.vertical,
       layout.rect.top,
     );
-    double newRight = _value(
+    double newRight = getValue(
       right,
       Axis.horizontal,
       layout.rect.right,
     );
-    double newBottom = _value(
+    double newBottom = getValue(
       bottom,
       Axis.vertical,
       layout.rect.bottom,
@@ -173,8 +173,8 @@ class WindowResizeGestureDetector extends StatelessWidget {
     this.listeners,
     this.onStartResize,
     this.onEndResize,
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {

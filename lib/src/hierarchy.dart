@@ -31,8 +31,8 @@ class WindowHierarchy extends StatelessWidget {
     required this.controller,
     required this.layoutDelegate,
     this.useParentSize = false,
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -112,8 +112,7 @@ class _LayoutBuilder extends StatefulWidget {
     required this.delegate,
     required this.entries,
     required this.focusHierarchy,
-    Key? key,
-  }) : super(key: key);
+  });
 
   @override
   _LayoutBuilderState createState() => _LayoutBuilderState();

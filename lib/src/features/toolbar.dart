@@ -53,7 +53,7 @@ class ToolbarWindowFeature extends WindowFeature {
 /// This widget is not expected to be used in a proper WM but rather serves as an
 /// example of how a toolbar should be implemented.
 class DefaultToolbar extends StatelessWidget {
-  const DefaultToolbar({Key? key}) : super(key: key);
+  const DefaultToolbar({super.key});
 
   @override
   Widget build(BuildContext context) {
