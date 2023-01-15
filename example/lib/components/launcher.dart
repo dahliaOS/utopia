@@ -1,4 +1,4 @@
-import 'package:example/example.dart';
+import 'package:example/calculator.dart';
 import 'package:example/shell.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -20,7 +20,7 @@ class Launcher extends StatelessWidget {
       position: Offset.zero,
     ),
     properties: {
-      WindowEntry.title: "Example window",
+      WindowEntry.title: "Calculator",
       WindowEntry.icon: null,
       ResizeWindowFeature.minSize: Size(320, 240),
       ResizeWindowFeature.maxSize: Size.infinite,
@@ -91,16 +91,16 @@ class Launcher extends StatelessWidget {
   Widget getAppLauncher(BuildContext context) {
     return ListTile(
       leading: const FlutterLogo(size: 24),
-      title: const Text("Example app"),
+      title: const Text("Calculator"),
       subtitle: const Text(
-        "Just a simple app to drag around and play with",
+        "dahliaOS calculator",
       ),
       onTap: () {
         WindowHierarchy.of(
           context,
           listen: false,
         ).addWindowEntry(entry.newInstance(
-          content: const ExampleApp(),
+          content: Calculator(),
           //eventHandler: LogWindowEventHandler(),
         ));
 
