@@ -1,3 +1,8 @@
+import 'dart:async';
+import 'dart:math' as math;
+import 'dart:ui' as ui;
+
+import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 import 'package:utopia_wm/src/events/base.dart';
@@ -76,26 +81,35 @@ class WindowEntry {
     Widget? content,
     WindowEventHandler? eventHandler,
     LayoutInfo Function(LayoutInfo info)? overrideLayout,
-    Map<WindowPropertyKey, Object?> overrideProperties = const {},
+    WindowProperties overrideProperties = const {},
   }) {
-    final Map<WindowPropertyKey, Object?> completedProperties =
-        Map.of(properties)
-          ..addAll(overrideProperties)
-          ..putIfAbsent(id, () => const Uuid().v4());
-    assert(
-      completedProperties.containsKey(id) &&
-          completedProperties.containsKey(title),
-    );
+    final WindowProperties completedProperties =
+        _completeProperties(properties, overrideProperties);
 
     final LayoutInfo info = overrideLayout?.call(layoutInfo) ?? layoutInfo;
 
-    return LiveWindowEntry._(
-      content: content ?? const SizedBox(),
+    return LiveWindowEntry._fromContent(
+      content: content ?? const SizedBox.shrink(),
       layoutState: info.createStateInternal(eventHandler),
       features: features,
       eventHandler: eventHandler,
       registry: WindowPropertyRegistry(initialData: completedProperties),
     );
+  }
+
+  WindowProperties _completeProperties(
+    WindowProperties properties,
+    WindowProperties overrideProperties,
+  ) {
+    final WindowProperties completedProperties = Map.of(properties)
+      ..addAll(overrideProperties)
+      ..putIfAbsent(id, () => const Uuid().v4());
+    assert(
+      completedProperties.containsKey(id) &&
+          completedProperties.containsKey(title),
+    );
+
+    return completedProperties;
   }
 }
 
@@ -136,6 +150,12 @@ class LiveWindowEntry {
   ///
   /// It is recommended to access this field using the exposed provider if possible.
   final WindowEventHandler? eventHandler;
+
+  /// The texture containing the current visual state of the window.
+  final WindowTexture texture;
+
+  final GlobalKey _key = GlobalKey();
+
   bool _disposed = false;
 
   Widget? _view;
@@ -154,31 +174,36 @@ class LiveWindowEntry {
     return _view!;
   }
 
-  LiveWindowEntry._({
+  LiveWindowEntry._fromContent({
     required this.content,
     required this.layoutState,
     required this.features,
     required this.registry,
     this.eventHandler,
-  }) : _view = MultiProvider(
-          providers: [
-            ChangeNotifierProvider.value(value: registry),
-            ChangeNotifierProvider.value(value: layoutState),
-            Provider.value(value: eventHandler),
-          ],
-          key: GlobalKey(),
-          child: WindowWrapper(
-            features: features,
-            content: content,
-            key: ValueKey(registry.info.id),
-          ),
-        );
+  }) : texture = WindowTexture() {
+    _view = MultiProvider(
+      providers: [
+        ChangeNotifierProvider.value(value: registry),
+        ChangeNotifierProvider.value(value: layoutState),
+        ChangeNotifierProvider.value(value: texture),
+        Provider.value(value: eventHandler),
+      ],
+      key: _key,
+      child: WindowWrapper(
+        features: features,
+        content: content,
+        texture: texture,
+        key: ValueKey(registry.info.id),
+      ),
+    );
+  }
 
   /// Dispose the created view and invalidate the entry.
   /// It is not recommended to call this method directly as the WM itself will handle
   /// disposal when needed.
   void dispose() {
     _view = null;
+    texture.dispose();
     _disposed = true;
   }
 }
@@ -188,11 +213,13 @@ class LiveWindowEntry {
 /// It should not be used directly, it is expected to be used only by [LiveWindowEntry].
 class WindowWrapper extends StatefulWidget {
   final List<WindowFeature> features;
-  final Widget content;
+  final WindowTexture? texture;
+  final Widget? content;
 
   const WindowWrapper({
     required this.features,
-    required this.content,
+    this.texture,
+    this.content,
     super.key,
   });
 
@@ -223,7 +250,14 @@ class _WindowWrapperState extends State<WindowWrapper> {
 
   Widget _buildFeatures(BuildContext context, [int index = 0]) {
     if (index >= widget.features.length) {
-      return SizedBox.expand(child: widget.content);
+      return SizedBox.expand(
+        child: widget.texture != null
+            ? _WindowRecorder(
+                texture: widget.texture!,
+                child: widget.content ?? const Placeholder(),
+              )
+            : widget.content,
+      );
     }
 
     return widget.features[index]
@@ -260,4 +294,191 @@ abstract class WindowEventHandler {
   static WindowEventHandler? maybeOf(BuildContext context) {
     return Provider.of<WindowEventHandler?>(context, listen: false);
   }
+}
+
+/* ====== TEXTURES ====== */
+
+/// A [WindowTexture] allows to get a visual stream of the current window
+/// state, for example to show a window preview on the taskbar or similar.
+/// You can use [WindowTexture.of] to get the nearest texture from a context
+/// that derives from a window, else you can use the [texture] getter from
+/// [LiveWindowEntry].
+class WindowTexture extends ChangeNotifier {
+  final ValueNotifier<int> _recordRequestCount = ValueNotifier(0);
+  ui.Image? _image;
+  bool _disposed = false;
+
+  /// This method will signal the recorder for the window that
+  /// it should start recording. This system exists to avoid using resources when not needed.
+  ///
+  /// Calling this method will increment an internal counter which means the recording will stop
+  /// only when each requester will also call [stopRecording].
+  void startRecording() {
+    _recordRequestCount.value++;
+  }
+
+  /// Signals that a requester has stopped recording and the recorder could stop
+  /// recording if no other requester is present.
+  void stopRecording() {
+    _recordRequestCount.value = math.max(_recordRequestCount.value - 1, 0);
+  }
+
+  /// The current frame for the window texture.
+  /// To get a stream of frames, listen to this provider and get the image using this
+  ui.Image? get image => _image;
+
+  /// This method is used internally by the library to signal that a new frame is available.
+  /// Refrain from calling this directly unless you know what you're doing.
+  void provideFrame(ui.Image frame) {
+    if (_recordRequestCount.value <= 0 || _disposed) return;
+
+    _image = frame;
+    notifyListeners();
+  }
+
+  @override
+  void dispose() {
+    _disposed = true;
+    _image = null;
+    _recordRequestCount.dispose();
+    super.dispose();
+  }
+
+  /// Allows to access the currently associated texture for the window.
+  /// It is guaranteed to return a proper instance if accessed inside a [context] derived from a window.
+  static WindowTexture of(
+    BuildContext context, {
+    bool listen = true,
+  }) {
+    return Provider.of<WindowTexture>(context, listen: listen);
+  }
+}
+
+class _WindowRecorder extends StatefulWidget {
+  final WindowTexture texture;
+  final Widget child;
+
+  const _WindowRecorder({
+    required this.texture,
+    required this.child,
+  });
+
+  @override
+  State<_WindowRecorder> createState() => _WindowRecorderState();
+}
+
+class _WindowRecorderState extends State<_WindowRecorder> {
+  Timer? timer;
+  final GlobalKey key = GlobalKey();
+
+  void _recorderCountListener() {
+    final int recordRequestCount = widget.texture._recordRequestCount.value;
+
+    if (recordRequestCount > 0 && timer == null) {
+      WidgetsBinding.instance.addPostFrameCallback((timeStamp) => _initTimer());
+    } else if (recordRequestCount <= 0) {
+      timer?.cancel();
+      timer = null;
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    widget.texture._recordRequestCount.addListener(_recorderCountListener);
+  }
+
+  @override
+  void dispose() {
+    widget.texture._recordRequestCount.removeListener(_recorderCountListener);
+    timer?.cancel();
+    timer = null;
+    super.dispose();
+  }
+
+  void _initTimer() {
+    timer = Timer.periodic(const Duration(milliseconds: 10), (timer) async {
+      final RenderRepaintBoundary? boundary =
+          key.currentContext?.findRenderObject() as RenderRepaintBoundary?;
+
+      if (boundary == null) return;
+
+      try {
+        final actualImage = boundary.toImageSync();
+        WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+          widget.texture.provideFrame(actualImage);
+        });
+      } catch (e) {}
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return RepaintBoundary(key: key, child: widget.child);
+  }
+}
+
+/// Widget to display a window from its [WindowTexture].
+class WindowSurface extends StatefulWidget {
+  /// The [WindowTexture] to listen to and display
+  final WindowTexture texture;
+
+  const WindowSurface({
+    required this.texture,
+    super.key,
+  });
+
+  @override
+  State<WindowSurface> createState() => _WindowSurfaceState();
+}
+
+class _WindowSurfaceState extends State<WindowSurface> {
+  late final Widget? content;
+
+  @override
+  void initState() {
+    super.initState();
+    widget.texture.startRecording();
+    widget.texture.addListener(update);
+  }
+
+  @override
+  void dispose() {
+    widget.texture.removeListener(update);
+    widget.texture.stopRecording();
+    super.dispose();
+  }
+
+  void update() {
+    if (mounted) setState(() {});
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return CustomPaint(
+      painter: _TexturePainter(widget.texture.image),
+      child: const SizedBox.expand(),
+    );
+  }
+}
+
+class _TexturePainter extends CustomPainter {
+  final ui.Image? texture;
+
+  const _TexturePainter(this.texture);
+
+  @override
+  void paint(ui.Canvas canvas, ui.Size size) {
+    if (texture == null) return;
+
+    paintImage(
+      canvas: canvas,
+      rect: Offset.zero & size,
+      image: texture!,
+      fit: BoxFit.contain,
+    );
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => true;
 }
