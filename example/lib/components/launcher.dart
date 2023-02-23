@@ -90,7 +90,7 @@ class Launcher extends StatelessWidget {
 
   Widget getAppLauncher(BuildContext context) {
     return ListTile(
-      leading: const FlutterLogo(size: 24),
+      leading: const Icon(Icons.calculate, size: 35),
       title: const Text("Calculator"),
       subtitle: const Text(
         "dahliaOS calculator",
@@ -113,10 +113,7 @@ class Launcher extends StatelessWidget {
   }
 }
 
-class AppEntry {
-  
-
-}
+class AppEntry {}
 
 class ShadowWindowFeature extends WindowFeature {
   const ShadowWindowFeature();
