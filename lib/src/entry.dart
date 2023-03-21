@@ -12,6 +12,8 @@ import 'package:uuid/uuid.dart';
 
 import 'registry.dart';
 
+typedef LayoutInfoOverrideCallback = LayoutInfo Function(LayoutInfo info);
+
 /// Base class for any window inside the WM itself.
 ///
 /// Every property is considered "dry" along with the class instance itself, as such
@@ -80,7 +82,7 @@ class WindowEntry {
   LiveWindowEntry newInstance({
     Widget? content,
     WindowEventHandler? eventHandler,
-    LayoutInfo Function(LayoutInfo info)? overrideLayout,
+    LayoutInfoOverrideCallback? overrideLayout,
     WindowProperties overrideProperties = const {},
   }) {
     final WindowProperties completedProperties =
@@ -250,7 +252,7 @@ class _WindowWrapperState extends State<WindowWrapper> {
 
   Widget _buildFeatures(BuildContext context, [int index = 0]) {
     if (index >= widget.features.length) {
-      return SizedBox.expand(
+      return ClipRect(
         child: widget.texture != null
             ? _WindowRecorder(
                 texture: widget.texture!,

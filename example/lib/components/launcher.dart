@@ -1,4 +1,5 @@
-import 'package:example/example.dart';
+import 'package:example/apps/apps.dart';
+import 'package:example/apps/entry.dart';
 import 'package:example/shell.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -59,8 +60,11 @@ class Launcher extends StatelessWidget {
                 height: 360,
                 width: double.infinity,
                 child: ListView.builder(
-                  itemBuilder: (context, index) => getAppLauncher(context),
-                  itemCount: 8,
+                  itemBuilder: (context, index) => getAppLauncher(
+                    context,
+                    applications[index],
+                  ),
+                  itemCount: applications.length,
                 ),
               ),
             ),
@@ -88,21 +92,34 @@ class Launcher extends StatelessWidget {
     );
   }
 
-  Widget getAppLauncher(BuildContext context) {
+  Widget getAppLauncher(BuildContext context, ApplicationEntry appEntry) {
+    final properties = appEntry.overrideProperties ?? {};
+
     return ListTile(
-      leading: const FlutterLogo(size: 24),
-      title: const Text("Example app"),
-      subtitle: const Text(
-        "Just a simple app to drag around and play with",
-      ),
+      leading: appEntry.icon != null
+          ? Image(
+              image: appEntry.icon!,
+              width: 24,
+              height: 24,
+              filterQuality: FilterQuality.medium,
+            )
+          : const FlutterLogo(size: 24),
+      title: Text(appEntry.name),
+      subtitle:
+          appEntry.description != null ? Text(appEntry.description!) : null,
       onTap: () {
         WindowHierarchy.of(
           context,
           listen: false,
-        ).addWindowEntry(entry.newInstance(
-          content: const ExampleApp(),
-          //eventHandler: LogWindowEventHandler(),
-        ));
+        ).addWindowEntry(
+          entry.newInstance(
+            content: appEntry.entryPoint,
+            overrideLayout: appEntry.overrideLayout,
+            overrideProperties: Map.from(properties)
+              ..putIfAbsent(WindowEntry.icon, () => appEntry.icon)
+              ..putIfAbsent(WindowEntry.title, () => appEntry.name),
+          ),
+        );
 
         Provider.of<ShellDirectorState>(
           context,

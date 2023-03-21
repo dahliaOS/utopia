@@ -106,13 +106,17 @@ class _EntryButtonState extends State<_EntryButton> {
   @override
   void initState() {
     super.initState();
-    widget.properties.addListener(() => setState(() {}));
-    widget.layout.addListener(() => setState(() {}));
+    widget.properties.addListener(_update);
+    widget.layout.addListener(_update);
   }
+
+  void _update() => setState(() {});
 
   @override
   void dispose() {
     _debouncer?.cancel();
+    widget.properties.removeListener(_update);
+    widget.layout.removeListener(_update);
     super.dispose();
   }
 
